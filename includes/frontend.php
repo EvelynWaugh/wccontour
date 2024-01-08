@@ -53,7 +53,7 @@ class WCCON_Frontend {
 			)
 		);
 		 // wp_register_style( 'wccon-builder', plugins_url( 'assets/dist/app.css', WCCON_PLUGIN_DIR ), array(), time(), 'all' );
-		 wp_register_style( 'wccon-builder', plugins_url( 'assets/front/css/builder.css', WCCON_PLUGIN_DIR ), array(), WCCON_PLUGIN_VERSION, 'all' );
+		 wp_register_style( 'wccon-builder', plugins_url( 'assets/front/css/builder.min.css', WCCON_PLUGIN_DIR ), array(), WCCON_PLUGIN_VERSION, 'all' );
 		$nonce2 = wccon_get_nonce2();
 		global $wpdb,$post;
 

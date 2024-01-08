@@ -38,7 +38,7 @@ $offset = ( $current_page - 1 ) * $lists_per_page;
 $all_account_lang = $wccon_settings['multilang']['show_account'];
 $show_lang_modal  = $wccon_settings['multilang']['show_modal'];
 
-$wccon_multilang = WCContour_Multilang::instance();
+$wccon_multilang = WCCON_Multilang::instance();
 $current_lang    = $wccon_multilang->get_lang();
 $default_lang    = $wccon_multilang->get_default_lang();
 

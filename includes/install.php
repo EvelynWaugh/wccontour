@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WCCON_Install {
 	use WCCON\Instancetiable;
-	protected $wc_config_db_version = '1.0.7';
+	protected $wc_config_db_version = '1.0.8';
 	protected $current_db_version;
 
 

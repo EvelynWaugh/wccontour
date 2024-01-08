@@ -12,7 +12,7 @@
  * Domain Path: /languages
  * Text Domain: wccontour
  * WC requires at least: 5.0.0
- * WC tested up to:      8.2.3
+ * WC tested up to:      8.4.0
  *
  * @package WCCON
  */
