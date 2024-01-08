@@ -1,0 +1,132 @@
+.wccon-builder-wrapper.minimal {
+	// .wccon-component {
+	// 	&__title {
+	// 		width: 140px;
+	// 		font-size: 14px;
+	// 	}
+	// 	&__selected {
+	// 		width: 18px;
+	// 		height: 18px;
+	// 	}
+	// }
+	// .wccon-component-product {
+	// 	&__image {
+	// 		height: 40px;
+	// 		width: 40px;
+	// 		margin: 0 10px;
+	// 	}
+
+	// 	&__title {
+	// 		font-size: 14px;
+	// 	}
+	// }
+	// .wccon-component.out-ofstock {
+	// 	.wccon-component-product__quantity {
+	// 		font-size: 16px;
+	// 	}
+	// } 
+
+
+	.wccon-component {
+
+		&__title {
+			width:150px;
+			font-size: 16px;
+		}	
+		&.selected > .wccon-component-inner > &__body {
+			margin-left: 0;
+			width: calc(100% - 150px);
+			
+		}
+		&__image {
+			margin: 0 10px;
+		}
+		
+	}
+	.wccon-component:not(.wccon-component-has-children) .wccon-component-product__body {
+		max-width: 100%;
+		flex-shrink: 1;
+		width: 100%;
+	}
+	.wccon-builder-wrapper.wccon-builder-nostorage .wccon-component:not(.selected) {
+		.wccon-component__title {
+			width:290px;
+			font-size: 16px;
+		}	
+	}
+	.wccon-component-product {
+		&__multiple {
+			span {
+				display: none;
+			}
+			
+		}
+	}
+
+	.wccon-bottom-block.tablet_sticky {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		z-index: 125;
+		margin-top: 0;
+	}
+	.wccon-bottom-block:not(.tablet_sticky) {
+		position: relative;
+		bottom: unset;
+		left: unset;
+		z-index:inherit;
+		margin-top: 20px;
+	}
+
+	.wccon-products__topbar {
+		flex-wrap: wrap;
+		row-gap:10px;
+	}
+	.product-list-search {
+		margin-left: 0;
+	}
+
+	.product-item {
+
+		&__image {
+			order: 1;
+			margin: 0;
+		}
+		
+		&__desc {
+
+		}
+		&__actions {
+			order: 2;
+		}
+		&__body {
+			order: 4;
+			width: 100%;
+			margin: 0 5px 0 0;
+		}
+	}
+	.wccon-product-item {
+		flex-wrap: wrap;
+		@include justify-content(space-between);
+		row-gap: 6px;
+	}
+}
+
+@media (max-width: 768px) {
+	.wccon-builder-wrapper.minimal {
+		.wccon-component {
+
+			&__title {
+				width:auto;
+			}	
+		}
+	}
+}
+
+body.theme-kadence .wccon-builder-wrapper.minimal {
+
+	.wccon-component:not(.wccon-component-has-children) .wccon-component-product__body {
+		max-width: 150px;
+	}
+
+}
