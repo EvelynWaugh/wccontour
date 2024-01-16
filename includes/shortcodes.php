@@ -382,8 +382,8 @@ class WCCON_Shortcodes {
 
 		wp_enqueue_script( 'wccon-builder' );
 
-		$data_json    = wp_json_encode( $wccon_sheme );
-		$data_attr    = function_exists( 'wc_esc_json' ) ? wc_esc_json( $data_json ) : _wp_specialchars( $data_json, ENT_QUOTES, 'UTF-8', true );
+		$data_json = wp_json_encode( $wccon_sheme );
+
 		$use_template = 'blank-builder.php';
 		if ( $list_id ) {
 			$use_template = 'saved-builder.php';
@@ -395,7 +395,7 @@ class WCCON_Shortcodes {
 			array(
 				'config_info'   => $config_info,
 				'config_data'   => $config_data,
-				'data_attr'     => $data_attr,
+				'data_attr'     => $data_json,
 				'total_price'   => $total_price,
 				'builder_class' => $atts['class'],
 				'builder_title' => $atts['title'],

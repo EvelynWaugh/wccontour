@@ -503,7 +503,13 @@ class WCCON_Ajax {
 		}
 		$user_field = sanitize_text_field( wp_unslash( $_POST['field'] ) );
 
-		$product_taxonomies = array_merge( ...wp_list_pluck( wccon_get_product_taxonomies(), 'children' ) );
+		$lang = false;
+
+		if ( isset( $_POST['lang'] ) ) {
+			$lang = sanitize_text_field( wp_unslash( $_POST['lang'] ) );
+		}
+
+		$product_taxonomies = array_merge( ...wp_list_pluck( wccon_get_product_taxonomies( $lang ), 'children' ) );
 
 		$found_elements = wccon_search_term( $product_taxonomies, $user_field );
 
@@ -525,7 +531,13 @@ class WCCON_Ajax {
 		}
 		$user_field = sanitize_text_field( wp_unslash( $_POST['field'] ) );
 
-		$product_attributes = array_merge( ...wp_list_pluck( wccon_get_product_attributes(), 'children' ) );
+		$lang = false;
+
+		if ( isset( $_POST['lang'] ) ) {
+			$lang = sanitize_text_field( wp_unslash( $_POST['lang'] ) );
+		}
+
+		$product_attributes = array_merge( ...wp_list_pluck( wccon_get_product_attributes( $lang ), 'children' ) );
 
 		$found_elements = wccon_search_term( $product_attributes, $user_field );
 
@@ -565,12 +577,12 @@ class WCCON_Ajax {
 						$returned_object = (object) $returned_array;
 						return $returned_object;
 					},
-					wccon_get_all_product_taxonomies()
+					wccon_get_all_product_taxonomies( $lang )
 				),
-				array_merge( ...wp_list_pluck( wccon_get_all_product_taxonomies(), 'children' ) )
+				array_merge( ...wp_list_pluck( wccon_get_all_product_taxonomies( $lang ), 'children' ) )
 			);
 		} else {
-			$product_taxonomies = array_merge( ...wp_list_pluck( wccon_get_all_product_taxonomies(), 'children' ) );
+			$product_taxonomies = array_merge( ...wp_list_pluck( wccon_get_all_product_taxonomies( $lang ), 'children' ) );
 		}
 
 		$found_elements = wccon_search_term( $product_taxonomies, $user_field, $all );
@@ -578,7 +590,7 @@ class WCCON_Ajax {
 		wp_send_json_success(
 			array(
 				'fields' => $found_elements,
-				'tax'    => wccon_get_all_product_taxonomies(),
+				'tax'    => wccon_get_all_product_taxonomies( $lang ),
 			)
 		);
 	}

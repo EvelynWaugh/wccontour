@@ -201,7 +201,7 @@ class WCCON_Widget_Attributes extends WC_Widget {
 
 			echo '<div class="widget-expander"><svg xmlns="http://www.w3.org/2000/svg" width="7" height="4" viewBox="0 0 7 4" fill="#8C8C8C">
 			<path d="M3.154.145L.144 3.161a.491.491 0 0 0 .692.697l.002-.002L3.5 1.188l2.663 2.669c.19.191.5.192.692.002l.002-.002a.491.491 0 0 0 0-.695L3.847.145a.486.486 0 0 0-.693 0z"></path>
-			</svg><span class="widget-expander-show">' . sprintf( /* translators: %s: attributes count */ esc_html__( 'More (%s)', 'wccontour' ), (int) $count - apply_filters( 'wccon_widget_max_visible_options', 6, $instance ) ) . '</span><span class="widget-expander-hide">' . esc_html__( 'Less', 'wccontour' ) . '</span></div>';
+			</svg><span class="widget-expander-show">' . sprintf( /* translators: %s: attributes count */ esc_html__( 'More (%s)', 'wccontour' ), esc_attr( (int) $count - apply_filters( 'wccon_widget_max_visible_options', 6, $instance ) ) ) . '</span><span class="widget-expander-hide">' . esc_html__( 'Less', 'wccontour' ) . '</span></div>';
 		}
 		echo '</div></div>';
 

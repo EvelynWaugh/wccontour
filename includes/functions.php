@@ -604,18 +604,15 @@ function wccon_update_components( array $group, int $shortcode_db_id, int $group
 /**
  * All product taxonomies.
  */
-function wccon_get_all_product_taxonomies() {
-	return array_merge( wccon_get_product_taxonomies(), wccon_get_product_attributes() );
+function wccon_get_all_product_taxonomies( $lang = false ) {
+	return array_merge( wccon_get_product_taxonomies( $lang ), wccon_get_product_attributes( $lang ) );
 }
 
 /**
  * Product taxonomies.
  */
-function wccon_get_product_taxonomies() {
-	$lang = false;
-	if ( isset( $_POST['lang'] ) ) {
-		$lang = sanitize_text_field( wp_unslash( $_POST['lang'] ) );
-	}
+function wccon_get_product_taxonomies( $lang = false ) {
+
 	$taxonomies = get_taxonomies( array( 'object_type' => array( 'product' ) ), 'objects' );
 	if ( $lang ) {
 		$terms_data = wp_cache_get( 'wccon_product_taxonomies_search_' . $lang );
@@ -640,7 +637,7 @@ function wccon_get_product_taxonomies() {
 				'label'    => $taxonomy->labels->name,
 				'value'    => $taxonomy->name,
 
-				'children' => wccon_get_taxonomy_hierarchy( $taxonomy->name ),
+				'children' => wccon_get_taxonomy_hierarchy( $taxonomy->name, $lang ),
 			);
 
 		}
@@ -659,12 +656,12 @@ function wccon_get_product_taxonomies() {
 /**
  * Linear product taxonomies.
  */
-function wccon_get_linear_product_taxonomies() {
+function wccon_get_linear_product_taxonomies( $post_lang = false ) {
 
 	$wccon_multilang = WCCON_Multilang::instance();
 	$lang            = $wccon_multilang->get_lang();
-	if ( isset( $_POST['lang'] ) ) {
-		$lang = sanitize_text_field( wp_unslash( $_POST['lang'] ) );
+	if ( $post_lang ) {
+		$lang = $post_lang;
 	}
 	$taxonomies = get_taxonomies( array( 'object_type' => array( 'product' ) ), 'objects' );
 	if ( $lang ) {
@@ -722,11 +719,7 @@ function wccon_get_linear_product_taxonomies() {
 /**
  * Product attributes.
  */
-function wccon_get_product_attributes() {
-	$lang = false;
-	if ( isset( $_POST['lang'] ) ) {
-		$lang = sanitize_text_field( wp_unslash( $_POST['lang'] ) );
-	}
+function wccon_get_product_attributes( $lang = false ) {
 
 	if ( $lang ) {
 		$terms_data = wp_cache_get( 'wccon_product_attributes_search_' . $lang );
@@ -752,7 +745,7 @@ function wccon_get_product_attributes() {
 				'label'    => $taxonomy_name . ' (attribute)',
 				'value'    => $taxonomy->name,
 
-				'children' => wccon_get_taxonomy_hierarchy( $taxonomy->name ),
+				'children' => wccon_get_taxonomy_hierarchy( $taxonomy->name, $lang ),
 			);
 		}
 		if ( $lang ) {
@@ -770,7 +763,7 @@ function wccon_get_product_attributes() {
 /**
  * Taxonomy hierarchy.
  */
-function wccon_get_taxonomy_hierarchy( $taxonomy, $parent = 0, $exclude = 0 ) {
+function wccon_get_taxonomy_hierarchy( $taxonomy, $lang, $parent = 0, $exclude = 0 ) {
 	$taxonomy  = is_array( $taxonomy ) ? array_shift( $taxonomy ) : $taxonomy;
 	$term_args = array(
 		'taxonomy'   => $taxonomy,
@@ -779,12 +772,12 @@ function wccon_get_taxonomy_hierarchy( $taxonomy, $parent = 0, $exclude = 0 ) {
 		'exclude'    => $exclude,
 	);
 	$terms     = get_terms(
-		apply_filters( 'wccon_taxonomy_term_args', $term_args, $taxonomy )
+		apply_filters( 'wccon_taxonomy_term_args', $term_args, $taxonomy, $lang )
 	);
 
 	$children = array();
 	foreach ( $terms as $term ) {
-		$term->children = wccon_get_taxonomy_hierarchy( $taxonomy, $term->term_id, $exclude );
+		$term->children = wccon_get_taxonomy_hierarchy( $taxonomy, $lang, $term->term_id, $exclude );
 		$term->label    = $term->name;
 		$children[]     = $term;
 	}
@@ -1129,8 +1122,7 @@ function wccon_variation_dropdown( $args ) {
 			$html .= '</select>';
 			$html .= '</div>';
 
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo apply_filters( 'wccon_dropdown_variation_attribute_options_html', $html, $args );
+	return $html;
 }
 
 /**
@@ -1223,7 +1215,6 @@ function wccon_variation_nice_dropdown( $args ) {
 			$html .= '<ul data-attribute_name="attribute_' . esc_attr( sanitize_title( $attribute ) ) . '">' . $ul_options . '</ul>';
 			$html .= '</div>';
 
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	return $html;
 }
 
@@ -1316,7 +1307,6 @@ function wccon_variation_color_type( $args ) {
 			$html .= '<ul role="radiogroup" data-attribute_name="attribute_' . esc_attr( sanitize_title( $attribute ) ) . '">' . $ul_options . '</ul>';
 			$html .= '</div>';
 
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	return $html;
 }
 
@@ -1409,7 +1399,6 @@ function wccon_variation_button_type( $args ) {
 			$html .= '<ul role="radiogroup" data-attribute_name="attribute_' . esc_attr( sanitize_title( $attribute ) ) . '">' . $ul_options . '</ul>';
 			$html .= '</div>';
 
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	return $html;
 }
 

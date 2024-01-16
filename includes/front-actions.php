@@ -92,7 +92,7 @@ function wccon_render_required_items( $data, $id, $cp_data, $type ) {
 	?>
 
 	<div class="wccon-product-top__required">
-		<span><?php echo apply_filters( 'wccon_product_top_required_title', esc_html__( 'Required', 'wccontour' ), $data ); ?></span>
+		<span><?php echo esc_html( apply_filters( 'wccon_product_top_required_title', __( 'Required', 'wccontour' ), $data ) ); ?></span>
 		<div class="product-top__required-items">
 	<?php
 
@@ -153,14 +153,16 @@ function wccon_render_required_items( $data, $id, $cp_data, $type ) {
 			<?php
 			$component_image_id = $component['image_id'];
 			if ( $component_image_id ) {
-				echo wp_get_attachment_image(
-					$component_image_id,
-					'thumbnail',
-					'',
-					array(
-						'alt'   => $component['title'],
-						'title' => $component['title'],
+				echo wp_kses_post(
+					wp_get_attachment_image(
+						$component_image_id,
+						'thumbnail',
+						'',
+						array(
+							'alt'   => $component['title'],
+							'title' => $component['title'],
 
+						)
 					)
 				);
 			} else {
@@ -227,13 +229,15 @@ function wccon_render_extra_items( $data, $id, $cp_data, $type ) {
 							<?php
 							$component_image_id = $component['image_id'];
 							if ( $component_image_id ) {
-								echo wp_get_attachment_image(
-									$component_image_id,
-									'thumbnail',
-									'',
-									array(
-										'alt'   => $component['title'],
-										'title' => $component['title'],
+								echo wp_kses_post(
+									wp_get_attachment_image(
+										$component_image_id,
+										'thumbnail',
+										'',
+										array(
+											'alt'   => $component['title'],
+											'title' => $component['title'],
+										)
 									)
 								);
 							} else {

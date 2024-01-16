@@ -21,7 +21,7 @@ class WCCON_Multilang {
 	protected static $initial_lang = null;
 
 	public function __construct() {
-		add_filter( 'wccon_taxonomy_term_args', array( $this, 'pll_get_terms' ) );
+		add_filter( 'wccon_taxonomy_term_args', array( $this, 'pll_get_terms' ), 10, 3 );
 	}
 
 	public function is_wpml_enabled() {
@@ -122,9 +122,9 @@ class WCCON_Multilang {
 		}
 	}
 
-	public function pll_get_terms( $args ) {
-		if ( isset( $_POST['lang'] ) && ! empty( $_POST['lang'] ) && $this->is_pll_enabled() ) {
-			$args['lang'] = wp_unslash( $_POST['lang'] );
+	public function pll_get_terms( $args, $taxonomy, $lang ) {
+		if ( $lang && $this->is_pll_enabled() ) {
+			$args['lang'] = $lang;
 		}
 		return $args;
 	}

@@ -37,7 +37,7 @@ class WCCON_Admin {
 		// register sidebar.
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
 		// add_filter( 'widget_form_callback', array( $this, 'show_widgets_controls' ), 10, 2 );
-		 add_filter( 'widget_display_callback', array( $this, 'show_widgets_front' ), 10, 2 );
+		add_filter( 'widget_display_callback', array( $this, 'show_widgets_front' ), 10, 2 );
 
 		// add endpoint.
 		add_action( 'init', array( $this, 'add_endpoint' ) );
@@ -195,81 +195,6 @@ class WCCON_Admin {
 		);
 	}
 
-	/**
-	 * Enqueue compatibility scripts.
-	 */
-	public function render_compatibility__premium_only() {
-		if ( get_current_screen()->id !== 'product' ) {
-			return;
-		}
-		$enabled_compatibility = $this->settings['enabled_compat'] ?? true;
-		if ( ! $enabled_compatibility ) {
-			return;
-		}
-		global $post;
-		$product = wc_get_product( $post->ID );
-		// meta keys.
-		$meta_keys = wccon_get_product_meta_keys();
-
-		$script_asset_path              = WCCON_PLUGIN_PATH . 'assets/dist/compatibility.asset.php';
-		$script_asset                   = file_exists( $script_asset_path )
-			? require $script_asset_path
-			: array(
-				'dependencies' => array(),
-				'version'      => filemtime( $script_asset_path ),
-			);
-		$enable_compatibility           = get_post_meta( $post->ID, 'wccon_enable_compatibility', true );
-		$enable_compatibility           = $enable_compatibility ? (int) $enable_compatibility : 0;
-		$global_compatibility           = get_post_meta( $post->ID, 'wccon_global_compatibility', true );
-		$global_compatibility           = $global_compatibility ? (int) $global_compatibility : 0;
-		$comparator_compatibility       = get_post_meta( $post->ID, 'wccon_compatibility_comparator', true );
-		$comparator_compatibility       = $comparator_compatibility ? $comparator_compatibility : 'or';
-		$strict_tax_compatibility       = get_post_meta( $post->ID, 'wccon_strict_taxonomy', true );
-		$strict_tax_compatibility       = $strict_tax_compatibility ? (int) $strict_tax_compatibility : 0;
-		$strict_term_compatibility      = get_post_meta( $post->ID, 'wccon_strict_term', true );
-		$strict_term_compatibility      = $strict_term_compatibility ? (int) $strict_term_compatibility : 0;
-		$variation_compatibility        = array();
-		$enable_variation_compatibility = array();
-
-		if ( $product && $product->is_type( 'variable' ) ) {
-			$variations = wc_get_products(
-				array(
-					'parent' => $post->ID,
-					'type'   => 'variation',
-					'return' => 'ids',
-				)
-			);
-
-			foreach ( $variations as $variation_id ) {
-				$variation_compatibility[ $variation_id ]        = get_post_meta( $variation_id, 'wccon_compatibility_variation', true );
-				$enable_var_comp                                 = get_post_meta( $variation_id, 'wccon_enable_variation_compatibility', true );
-				$enable_variation_compatibility[ $variation_id ] = $enable_var_comp ? (int) $enable_var_comp : 0;
-			}
-		}
-		$compatibility_data = get_post_meta( $post->ID, 'wccon_compatibility_data', true );
-
-		wp_enqueue_style( 'wccon-compatibility', plugins_url( 'assets/dist/compatibility.css', WCCON_PLUGIN_DIR ), array(), time() );
-		wp_enqueue_script( 'wccon-compatibility', plugins_url( 'assets/dist/compatibility.js', WCCON_PLUGIN_DIR ), $script_asset['dependencies'], $script_asset['version'], true );
-		wp_localize_script(
-			'wccon-compatibility',
-			'WCCON_COMPATIBILITY',
-			array(
-				'ajax_url'                       => admin_url( 'admin-ajax.php' ),
-				'product_meta'                   => $meta_keys,
-
-				'enable_compatibility'           => $enable_compatibility,
-				'global_compatibility'           => $global_compatibility,
-				'comparator_compatibility'       => $comparator_compatibility,
-				'strict_tax_compatibility'       => $strict_tax_compatibility,
-				'strict_term_compatibility'      => $strict_term_compatibility,
-				'enable_compatibility_variation' => $enable_variation_compatibility,
-				'variation_compatibility'        => $variation_compatibility,
-				'compatibility_data'             => $compatibility_data,
-				'nonce'                          => wp_create_nonce( 'wccon-nonce' ),
-				'pro'                            => wccon_fs()->can_use_premium_code(),
-			)
-		);
-	}
 
 	/**
 	 * Helper function to get builder rows from db.
@@ -611,88 +536,6 @@ class WCCON_Admin {
 
 	}
 
-	/**
-	 * Save product variation compatibility.
-	 *
-	 * @param int $variation_id WC_Product_Variation id.
-	 * @param int $i
-	 */
-	public function save_variation_compatibility__premium_only( $variation_id, $i ) {
-		if ( isset( $_POST['wccon_enable_variation_compatibility'] ) ) {
-			if ( isset( $_POST['wccon_enable_variation_compatibility'][ $variation_id ] ) ) {
-				$enable_compatibility = wc_clean( wp_unslash( $_POST['wccon_enable_variation_compatibility'][ $variation_id ] ) );
-
-				update_post_meta( $variation_id, 'wccon_enable_variation_compatibility', $enable_compatibility );
-			} else {
-				update_post_meta( $variation_id, 'wccon_enable_variation_compatibility', '0' );
-			}
-		}
-		if ( isset( $_POST['wccon_compatibility_variation'] ) ) {
-			if ( isset( $_POST['wccon_compatibility_variation'][ $variation_id ] ) ) {
-				$compatibility_variation_data = wc_clean( json_decode( wp_unslash( $_POST['wccon_compatibility_variation'][ $variation_id ] ), true ) );
-
-				update_post_meta( $variation_id, 'wccon_compatibility_variation', $compatibility_variation_data );
-			}
-		}
-		if ( isset( $_POST['wccon_comp_variation_compatibility'] ) ) {
-			if ( isset( $_POST['wccon_comp_variation_compatibility'][ $variation_id ] ) ) {
-				$compatibility_compare = wc_clean( wp_unslash( $_POST['wccon_comp_variation_compatibility'][ $variation_id ] ) );
-
-				update_post_meta( $variation_id, 'wccon_compatibility_comparator', $compatibility_compare );
-			}
-		}
-		if ( isset( $_POST['wccon_strict_tax_variation'] ) ) {
-			if ( isset( $_POST['wccon_strict_tax_variation'][ $variation_id ] ) ) {
-				$compatibility_strict_tax = wc_clean( wp_unslash( $_POST['wccon_strict_tax_variation'][ $variation_id ] ) );
-
-				update_post_meta( $variation_id, 'wccon_strict_taxonomy', $compatibility_strict_tax );
-			}
-		}
-		if ( isset( $_POST['wccon_strict_term_variation'] ) ) {
-			if ( isset( $_POST['wccon_strict_term_variation'][ $variation_id ] ) ) {
-				$compatibility_strict_term = wc_clean( wp_unslash( $_POST['wccon_strict_term_variation'][ $variation_id ] ) );
-
-				update_post_meta( $variation_id, 'wccon_strict_term', $compatibility_strict_term );
-			}
-		}
-	}
-
-	/**
-	 * Save product global compatibility.
-	 *
-	 * @param object $post_id Post ID.
-	 */
-	public function save_global_compatibility__premium_only( $post_id ) {
-
-		if ( isset( $_POST['wccon_enable_compatibility'] ) ) {
-			$enable_compatibility = wc_clean( wp_unslash( $_POST['wccon_enable_compatibility'] ) );
-			update_post_meta( $post_id, 'wccon_enable_compatibility', $enable_compatibility );
-		} else {
-			update_post_meta( $post_id, 'wccon_enable_compatibility', '0' );
-		}
-
-		if ( isset( $_POST['wccon_global_compatibility'] ) ) {
-			$compatibility_global = wc_clean( wp_unslash( $_POST['wccon_global_compatibility'] ) );
-			update_post_meta( $post_id, 'wccon_global_compatibility', $compatibility_global );
-		}
-
-		if ( isset( $_POST['wccon_compatibility_data'] ) ) {
-			$compatibility_data = wc_clean( json_decode( wp_unslash( $_POST['wccon_compatibility_data'] ), true ) );
-			update_post_meta( $post_id, 'wccon_compatibility_data', $compatibility_data );
-		}
-		if ( isset( $_POST['wccon_compatibility_comparator'] ) ) {
-			$compatibility_comparator = wc_clean( wp_unslash( $_POST['wccon_compatibility_comparator'] ) );
-			update_post_meta( $post_id, 'wccon_compatibility_comparator', $compatibility_comparator );
-		}
-		if ( isset( $_POST['wccon_strict_taxonomy'] ) ) {
-			$compatibility_tax_strict = wc_clean( wp_unslash( $_POST['wccon_strict_taxonomy'] ) );
-			update_post_meta( $post_id, 'wccon_strict_taxonomy', $compatibility_tax_strict );
-		}
-		if ( isset( $_POST['wccon_strict_term'] ) ) {
-			$compatibility_term_strict = wc_clean( wp_unslash( $_POST['wccon_strict_term'] ) );
-			update_post_meta( $post_id, 'wccon_strict_term', $compatibility_term_strict );
-		}
-	}
 
 	/**
 	 * Register widgets.
