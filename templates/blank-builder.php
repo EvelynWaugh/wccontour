@@ -17,7 +17,7 @@ $settings      = wccon_get_settings();
 $local_storage = $settings['local_storage'];
 
 ?>
-<div class="wccon-builder-wrapper <?php echo esc_attr( $local_storage ? '' : 'wccon-builder-nostorage' ); ?>" data-wccon-builder="<?php echo esc_attr( $config_info['id'] ); ?>" data-wccon-scheme="<?php echo wc_esc_json( $data_attr ); // WPCS: XSS ok. ?>">
+<div class="wccon-builder-wrapper <?php echo esc_attr( $local_storage ? '' : 'wccon-builder-nostorage' ); ?>" data-wccon-builder="<?php echo esc_attr( $config_info['id'] ); ?>" data-wccon-scheme="<?php echo esc_attr( $data_attr ); ?>">
 		
 		<?php if ( $builder_title && $show_title ) : ?>
 			<h3><?php echo wp_kses_post( $builder_title ); ?></h3>

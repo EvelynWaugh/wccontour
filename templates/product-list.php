@@ -62,7 +62,7 @@ if ( ! empty( $selected_products ) ) {
 		$variations_json = wp_json_encode( $available_variations );
 
 	?>
-<div class="wccon-product-item" data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" data-variation-id="<?php echo esc_attr( $variation_id ? $variation_id : '' ); ?>"  data-product_variations="<?php echo wc_esc_json( $variations_json ); // WPCS: XSS ok. ?>" data-price="<?php echo esc_attr( $product_price ); ?>">
+<div class="wccon-product-item" data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" data-variation-id="<?php echo esc_attr( $variation_id ? $variation_id : '' ); ?>"  data-product_variations="<?php echo esc_attr( $variations_json ); ?>" data-price="<?php echo esc_attr( $product_price ); ?>">
 	<div class="product-item__image">
 		<a href="<?php echo esc_url( get_permalink( $product->get_id() ) ); ?>">
 			<img src="<?php echo esc_url( wp_get_attachment_image_url( $product->get_image_id(), apply_filters( 'wccon_product_image_size', $settings['style']['image_size'] ) ) ); ?>"  alt="<?php echo esc_attr( $product->get_name() ); ?>">	
@@ -147,7 +147,7 @@ else :
 
 	?>
 
-	<div class="wccon-product-item" data-product-info="<?php echo wc_esc_json( $product_info_json ); // WPCS: XSS ok. ?>" data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" data-price="<?php echo esc_attr( wc_get_price_to_display( $product ) ); ?>">
+	<div class="wccon-product-item" data-product-info="<?php echo esc_attr( $product_info_json ); ?>" data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" data-price="<?php echo esc_attr( wc_get_price_to_display( $product ) ); ?>">
 	<div class="product-item__image">
 		<a href="<?php echo esc_url( get_permalink( $product->get_id() ) ); ?>">
 			<img src="<?php echo esc_url( wp_get_attachment_image_url( $product->get_image_id(), apply_filters( 'wccon_product_image_size', $settings['style']['image_size'] ) ) ); ?>"  alt="<?php echo esc_attr( $product->get_name() ); ?>">	

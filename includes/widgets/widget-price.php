@@ -102,7 +102,7 @@ class WCCON_Widget_Price extends WC_Widget {
 			$end_price   = $query_args['active']['prices'][1];
 
 		}
-		$start_end_prices = 'data-start-price="' . esc_attr( $start_price ) . '" data-end-price="' . esc_attr( $end_price ) . '" ';
+
 		$this->widget_start( $args, $instance );
 		echo '<div class="wccon-slider-wrapper ' . esc_attr( $inputs ? 'wccon-price-inputs' : '' ) . '">';
 		if ( $inputs ) {
@@ -111,7 +111,7 @@ class WCCON_Widget_Price extends WC_Widget {
 			echo '<input type="number" name="max_price" class="inp-max" min="' . esc_attr( $min_price ) . '" max="' . esc_attr( $max_price ) . '" placeholder="' . esc_attr( $max_price ) . '" />';
 			echo '</div>';
 		}
-		echo '<div id="wccon-slider" class="wccon-slider" data-min-price="' . esc_attr( $min_price ) . '" data-max-price="' . esc_attr( $max_price ) . '"' . $start_end_prices . ' ></div>'; // WPCS: XSS ok.
+		echo '<div id="wccon-slider" class="wccon-slider" data-min-price="' . esc_attr( $min_price ) . '" data-max-price="' . esc_attr( $max_price ) . '" data-start-price="' . esc_attr( $start_price ) . '" data-end-price="' . esc_attr( $end_price ) . '" ></div>';
 		if ( $inputs ) {
 			echo '<button class="wccon-price-filter-button">' . esc_html__( 'Apply', 'wccontour' ) . '</button>';
 		}
@@ -141,6 +141,7 @@ class WCCON_Widget_Price extends WC_Widget {
 
 		$sql = apply_filters( 'wccon_price_filter_sql', $sql );
 
-		return $wpdb->get_row( $sql ); // WPCS: unprepared SQL ok.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is safe.
+		return $wpdb->get_row( $sql );
 	}
 }

@@ -96,6 +96,7 @@ class WCCON_Ajax {
 		$groups_table      = WCCON_DB::tables( 'groups', 'name' );
 		$groups_meta_table = WCCON_DB::tables( 'groups_meta', 'name' );
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- using table name as a variable is acceptable.
 		$shortcode_exists = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$config_table} WHERE shortcode_id=%d", $shortcode_id ), ARRAY_A );
 
 		// update & insert & delete.

@@ -145,6 +145,7 @@ class WCCON_Widget_Meta extends WC_Widget {
 		// We have a query - let's see if cached results of this query already exist.
 		$query_hash = md5( $query_sql );
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query_sql is safe.
 		$results = $wpdb->get_results( $query_sql, ARRAY_A );
 
 		$counts                       = array_map( 'absint', wp_list_pluck( $results, 'meta_count', 'meta_count_id' ) );
