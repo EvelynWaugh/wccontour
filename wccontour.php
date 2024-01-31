@@ -12,7 +12,7 @@
  * Domain Path: /languages
  * Text Domain: wccontour
  * WC requires at least: 5.0.0
- * WC tested up to:      8.4.0
+ * WC tested up to:      8.5.2
  *
  * @package WCCON
  */
@@ -36,6 +36,7 @@ if ( ! function_exists( 'wccon_fs' ) ) {
 				array(
 					'id'             => '14166',
 					'slug'           => 'wccontour',
+					'premium_slug'   => 'wccontour-premium',
 					'type'           => 'plugin',
 					'public_key'     => 'pk_d0c93c0b6bf5a6ff3140d3466e792',
 					'is_premium'     => false,
@@ -45,7 +46,7 @@ if ( ! function_exists( 'wccon_fs' ) ) {
 					'has_paid_plans' => true,
 					'menu'           => array(
 						'slug'    => 'wccon-settings',
-						'contact' => false,
+						'contact' => true,
 						'support' => false,
 					),
 					'is_live'        => true,
@@ -196,6 +197,7 @@ class WCCON_Plugin {
 			$wpdb->query( "DROP TABLE IF EXISTS {$config_table}" );
 			delete_option( 'wccon_db_version' );
 			delete_option( 'wccon_settings' );
+			delete_option( 'wccon_flushed' );
 			delete_post_meta_by_key( 'wccon_enable_variation_compatibility' );
 			delete_post_meta_by_key( 'wccon_compatibility_variation' );
 			delete_post_meta_by_key( 'wccon_compatibility_comparator' );

@@ -1,9 +1,9 @@
 ===  WC Contour - Product Bundles Builder for WooCommerce ===
  
 Contributors: wsjrcatarri
-Tags: product bundles, woocommerce builder, product builder, bundles builder, woocommerce product builder, ajax product, 
+Tags: product bundles, woocommerce builder, product builder, bundles builder, woocommerce product builder, ajax product
 Requires at least: 5.5
-Tested up to: 6.4.2
+Tested up to: 6.4.3
 Requires PHP: 7.4
 Stable tag: 1.0.0
 License: GPLv2 or later
@@ -85,10 +85,13 @@ Simply deactivate and delete the plugin.
 
 1.  WC Contour - Product Bundles Builder for WooCommerce - Admin Settings Page
 2.  WC Contour - Product Bundles Builder for WooCommerce - Admin Builder Page
-3.  WC Contour - Product Bundles Builder for WooCommerce - Front Builder Page
-4.  WC Contour - Product Bundles Builder for WooCommerce - Compatibility alerts
-5.  WC Contour - Product Bundles Builder for WooCommerce - Account page
-6.  WC Contour - Product Bundles Builder for WooCommerce - Product list & Filters
+3.  WC Contour - Product Bundles Builder for WooCommerce - Front Builder Page Blank
+4.  WC Contour - Product Bundles Builder for WooCommerce - Front Builder Page Filled
+5.  WC Contour - Product Bundles Builder for WooCommerce - Front Builder Page Explained
+6.  WC Contour - Product Bundles Builder for WooCommerce - Product list & Filters 1
+7.  WC Contour - Product Bundles Builder for WooCommerce - Product list & Filters 2
+8.  WC Contour - Product Bundles Builder for WooCommerce - Account page
+9.  WC Contour - Product Bundles Builder for WooCommerce - Compatibility alerts
 
 == Changelog ==
 = 1.0.0 =

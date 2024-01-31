@@ -1,15 +1,15 @@
-# Copyright (C) 2023 wsjr_catarri
-# This file is distributed under the same license as the WC Contour - Product Bundles Builder for WooCommerce.
+# Copyright (C) 2024 wsjrcatarri
+# This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: WC Contour - Product Bundles Builder for WooCommerce 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wccontour\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wccontour(wordpress)\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-10-31T07:01:36+00:00\n"
+"POT-Creation-Date: 2024-01-30T07:19:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: wccontour\n"
@@ -31,87 +31,58 @@ msgid "wsjrcatarri"
 msgstr ""
 
 #: includes/admin.php:28
-#: includes/functions.php:1424
+#: includes/functions.php:1413
 #: assets/dist/settings.js:102
 msgid "Saved lists"
 msgstr ""
 
-#: includes/admin.php:69
-#: includes/admin.php:70
+#: includes/admin.php:61
+#: includes/admin.php:62
 msgid "WC Contour"
 msgstr ""
 
-#: includes/admin.php:78
+#: includes/admin.php:70
 msgid "Settings"
 msgstr ""
 
-#: includes/admin.php:79
+#: includes/admin.php:71
 msgid "Builder"
 msgstr ""
 
-#: includes/admin.php:309
+#: includes/admin.php:231
 msgid "Select page"
 msgstr ""
 
-#: includes/admin.php:493
+#: includes/admin.php:421
 msgid "Product compatibility"
 msgstr ""
 
-#: includes/ajax.php:1221
-#: includes/ajax.php:1239
-#: includes/ajax.php:1251
-#: includes/ajax.php:1288
-#: includes/ajax.php:1309
-#: includes/ajax.php:1327
-#: includes/ajax.php:1358
-#: includes/ajax.php:1384
-#: includes/ajax.php:1468
-#: includes/ajax.php:1591
-#: includes/ajax.php:1603
-msgid " is not compatible with "
-msgstr ""
-
-#. translators: %s: product name
-#: includes/ajax.php:1222
-#: includes/ajax.php:1240
-#: includes/ajax.php:1252
-#: includes/ajax.php:1289
-#: includes/ajax.php:1310
-#: includes/ajax.php:1328
-#: includes/ajax.php:1359
-#: includes/ajax.php:1385
-#: includes/ajax.php:1469
-#: includes/ajax.php:1592
-#: includes/ajax.php:1604
-msgid "Compatibility error: %s"
-msgstr ""
-
-#: includes/ajax.php:1685
+#: includes/ajax.php:1000
 msgid "Wrong ID"
 msgstr ""
 
-#: includes/ajax.php:1968
+#: includes/ajax.php:1278
 msgid "No user found"
 msgstr ""
 
-#: includes/ajax.php:1981
+#: includes/ajax.php:1291
 msgid "No records found"
 msgstr ""
 
-#: includes/ajax.php:1992
+#: includes/ajax.php:1302
 msgid "You have reached max allowed lists"
 msgstr ""
 
-#: includes/ajax.php:2229
+#: includes/ajax.php:1539
 msgid "ID not valid"
 msgstr ""
 
-#: includes/ajax.php:2236
-#: includes/ajax.php:2243
+#: includes/ajax.php:1546
+#: includes/ajax.php:1553
 msgid "JSON is not valid"
 msgstr ""
 
-#: includes/ajax.php:2357
+#: includes/ajax.php:1667
 msgid "ID is not exists"
 msgstr ""
 
@@ -149,7 +120,7 @@ msgstr ""
 
 #: includes/front-actions.php:51
 #: templates/product-list.php:111
-#: templates/product-list.php:190
+#: templates/product-list.php:189
 msgid "In stock"
 msgstr ""
 
@@ -167,111 +138,143 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: includes/front-actions.php:198
+#: includes/front-actions.php:200
 msgid "Extra"
 msgstr ""
 
-#: includes/front-actions.php:267
+#: includes/front-actions.php:271
 msgid "Clear"
 msgstr ""
 
-#: includes/front-actions.php:271
+#: includes/front-actions.php:275
 #: assets/dist/app.js:102
 #: assets/dist/settings.js:102
 msgid "Save"
 msgstr ""
 
-#: includes/front-actions.php:276
-#: templates/saved-lists.php:329
-#: templates/users-lists.php:303
+#: includes/front-actions.php:280
+#: templates/saved-lists.php:282
+#: templates/users-lists.php:257
 msgid "Share"
 msgstr ""
 
-#: includes/front-actions.php:400
+#: includes/front-actions.php:414
 msgid "Reset"
 msgstr ""
 
-#: includes/front-actions.php:403
+#: includes/front-actions.php:417
 msgid "Reset attributes"
 msgstr ""
 
-#: includes/frontend.php:114
+#: includes/frontend.php:115
 #: assets/dist/app.js:102
 msgid "Saved!"
 msgstr ""
 
-#: includes/frontend.php:115
+#: includes/frontend.php:116
 msgid "Removed successfully!"
 msgstr ""
 
-#: includes/frontend.php:116
+#: includes/frontend.php:117
 msgid "Copied!"
 msgstr ""
 
-#: includes/frontend.php:118
+#: includes/frontend.php:119
 #: assets/dist/app.js:102
 msgid "Something went wrong. Try again."
 msgstr ""
 
-#: includes/frontend.php:119
+#: includes/frontend.php:120
 msgid "Added to cart!"
 msgstr ""
 
-#: includes/frontend.php:120
+#: includes/frontend.php:121
 msgid "Are you sure?"
 msgstr ""
 
-#: includes/frontend.php:123
+#: includes/frontend.php:124
 #: includes/product.php:96
 msgid "N/A"
 msgstr ""
 
-#: includes/frontend.php:138
+#: includes/frontend.php:139
 msgid " In stock"
 msgstr ""
 
-#: includes/frontend.php:139
+#: includes/frontend.php:140
 msgid " Out of stock"
 msgstr ""
 
-#: includes/frontend.php:152
+#: includes/frontend.php:153
 #: templates/product-top-section.php:46
 msgid "Users's collections"
 msgstr ""
 
-#: includes/frontend.php:165
+#: includes/frontend.php:166
 #: templates/product-top-section.php:44
 msgid "My collections"
 msgstr ""
 
-#: includes/functions.php:999
+#: includes/functions.php:992
 msgid "&laquo; Previous"
 msgstr ""
 
-#: includes/functions.php:1000
+#: includes/functions.php:993
 msgid "Next &raquo;"
 msgstr ""
 
-#: includes/functions.php:1067
-#: includes/functions.php:1079
-#: includes/functions.php:1150
-#: includes/functions.php:1162
-#: includes/functions.php:1244
-#: includes/functions.php:1256
-#: includes/functions.php:1337
-#: includes/functions.php:1349
+#: includes/functions.php:1060
+#: includes/functions.php:1072
+#: includes/functions.php:1142
+#: includes/functions.php:1154
+#: includes/functions.php:1235
+#: includes/functions.php:1247
+#: includes/functions.php:1327
+#: includes/functions.php:1339
 msgid "Choose an option"
 msgstr ""
 
-#: includes/import.php:287
+#: includes/functions.php:1487
+msgid "Link"
+msgstr ""
+
+#: includes/functions.php:1496
+msgid "Telegram"
+msgstr ""
+
+#: includes/functions.php:1505
+msgid "Viber"
+msgstr ""
+
+#: includes/functions.php:1514
+msgid "Facebook"
+msgstr ""
+
+#: includes/functions.php:1523
+msgid "Twitter"
+msgstr ""
+
+#: includes/functions.php:1532
+msgid "Pinterest"
+msgstr ""
+
+#: includes/functions.php:1541
+msgid "LinkedIn"
+msgstr ""
+
+#: includes/functions.php:1550
+msgid "WhatsApp"
+msgstr ""
+
+#: includes/import.php:300
 msgid "PC Builder"
 msgstr ""
 
-#: includes/import.php:290
+#: includes/import.php:303
 msgid "Bicycle Builder"
 msgstr ""
 
-#: includes/import.php:293
+#: includes/import.php:306
 msgid "Camping Builder"
 msgstr ""
 
@@ -308,7 +311,6 @@ msgstr ""
 
 #: includes/widgets/widget-attributes.php:51
 #: includes/widgets/widget-taxonomies.php:51
-#: assets/dist/compatibility.js:75
 msgid "Taxonomy"
 msgstr ""
 
@@ -327,16 +329,16 @@ msgid "WCC Query"
 msgstr ""
 
 #. translators: %s: attributes count
-#: includes/widgets/widget-attributes.php:204
-#: includes/widgets/widget-meta.php:194
-#: includes/widgets/widget-taxonomies.php:292
+#: includes/widgets/widget-attributes.php:205
+#: includes/widgets/widget-meta.php:195
+#: includes/widgets/widget-taxonomies.php:293
 msgid "More (%s)"
 msgstr ""
 
 #. translators: %s: attributes count
-#: includes/widgets/widget-attributes.php:204
-#: includes/widgets/widget-meta.php:194
-#: includes/widgets/widget-taxonomies.php:292
+#: includes/widgets/widget-attributes.php:205
+#: includes/widgets/widget-meta.php:195
+#: includes/widgets/widget-taxonomies.php:293
 msgid "Less"
 msgstr ""
 
@@ -437,8 +439,6 @@ msgstr ""
 #: templates/saved-builder.php:346
 #: templates/saved-builder.php:443
 #: templates/saved-builder.php:536
-#: templates/saved-builder.php:664
-#: templates/saved-builder.php:756
 msgid "— Expand —"
 msgstr ""
 
@@ -448,7 +448,6 @@ msgstr ""
 #: templates/blank-builder.php:151
 #: templates/blank-builder.php:187
 #: templates/blank-builder.php:190
-#: templates/blank-builder.php:262
 #: templates/saved-builder.php:143
 #: templates/saved-builder.php:147
 #: templates/saved-builder.php:240
@@ -459,44 +458,27 @@ msgstr ""
 #: templates/saved-builder.php:447
 #: templates/saved-builder.php:537
 #: templates/saved-builder.php:540
-#: templates/saved-builder.php:665
-#: templates/saved-builder.php:669
-#: templates/saved-builder.php:757
-#: templates/saved-builder.php:761
 msgid "— Collapse —"
 msgstr ""
 
 #: templates/blank-builder.php:100
 #: templates/blank-builder.php:150
 #: templates/blank-builder.php:189
-#: templates/blank-builder.php:261
 #: templates/saved-builder.php:146
 #: templates/saved-builder.php:243
 #: templates/saved-builder.php:350
 #: templates/saved-builder.php:446
 #: templates/saved-builder.php:539
-#: templates/saved-builder.php:668
-#: templates/saved-builder.php:760
 msgid "— Choose —"
 msgstr ""
 
-#: templates/blank-builder.php:225
-#: templates/saved-builder.php:589
-msgid "Extra components"
-msgstr ""
-
-#: templates/blank-builder.php:319
-#: templates/saved-builder.php:831
+#: templates/blank-builder.php:251
+#: templates/saved-builder.php:612
 msgid "Add to cart"
 msgstr ""
 
-#: templates/filled-component.php:88
-#: templates/templates.php:71
-msgid "Add more"
-msgstr ""
-
-#: templates/filled-component.php:116
-#: templates/templates.php:101
+#: templates/filled-component.php:107
+#: templates/templates.php:91
 msgid "Outofstock"
 msgstr ""
 
@@ -509,12 +491,12 @@ msgid "Filters"
 msgstr ""
 
 #: templates/product-builder.php:177
-#: templates/users-lists.php:336
+#: templates/users-lists.php:290
 msgid "Nothing found"
 msgstr ""
 
 #: templates/product-list.php:114
-#: templates/product-list.php:193
+#: templates/product-list.php:192
 msgid "Out of stock"
 msgstr ""
 
@@ -524,34 +506,38 @@ msgstr ""
 msgid "Assebly from %s"
 msgstr ""
 
-#: templates/saved-lists.php:326
-#: templates/users-lists.php:300
+#: templates/saved-lists.php:151
+msgid "Delete"
+msgstr ""
+
+#: templates/saved-lists.php:279
+#: templates/users-lists.php:254
 msgid "Edit"
 msgstr ""
 
-#: templates/saved-lists.php:337
-#: templates/users-lists.php:311
+#: templates/saved-lists.php:290
+#: templates/users-lists.php:265
 msgid "Buy"
 msgstr ""
 
-#: templates/saved-lists.php:363
+#: templates/saved-lists.php:316
 msgid "No list saved yet"
 msgstr ""
 
-#: templates/saved-lists.php:369
-#: templates/users-lists.php:343
+#: templates/saved-lists.php:322
+#: templates/users-lists.php:297
 msgid "Load more"
 msgstr ""
 
-#: wccontour.php:192
+#: wccontour.php:235
 msgid "WC Contour requires at least 7.4 php version."
 msgstr ""
 
-#: wccontour.php:202
+#: wccontour.php:245
 msgid "WooCommerce must be active and have at least 5.0.0 version."
 msgstr ""
 
-#: wccontour.php:213
+#: wccontour.php:256
 msgid "WooCommerce must be active."
 msgstr ""
 
@@ -621,7 +607,6 @@ msgid "Filter by meta"
 msgstr ""
 
 #: assets/dist/app.js:102
-#: assets/dist/compatibility.js:75
 msgid "Type to search…"
 msgstr ""
 
@@ -662,7 +647,6 @@ msgid "Select meta"
 msgstr ""
 
 #: assets/dist/app.js:102
-#: assets/dist/compatibility.js:75
 msgid "Product meta"
 msgstr ""
 
@@ -695,7 +679,6 @@ msgid "Add query"
 msgstr ""
 
 #: assets/dist/app.js:102
-#: assets/dist/compatibility.js:75
 msgid "Products"
 msgstr ""
 
@@ -765,6 +748,18 @@ msgstr ""
 
 #: assets/dist/app.js:102
 msgid "Add builder"
+msgstr ""
+
+#: assets/dist/app.js:102
+msgid "You are using FREE version,"
+msgstr ""
+
+#: assets/dist/app.js:102
+msgid " only 1 builder item available"
+msgstr ""
+
+#: assets/dist/app.js:102
+msgid "Upgrade to PRO"
 msgstr ""
 
 #: assets/dist/app.js:102
@@ -840,43 +835,15 @@ msgid "Cancel"
 msgstr ""
 
 #: assets/dist/app.js:102
+msgid "Upgrade to PRO plan"
+msgstr ""
+
+#: assets/dist/app.js:102
+msgid "Upgrade"
+msgstr ""
+
+#: assets/dist/app.js:102
 msgid "First add builder"
-msgstr ""
-
-#: assets/dist/compatibility.js:75
-msgid "Term ids, separated by comma"
-msgstr ""
-
-#: assets/dist/compatibility.js:75
-msgid "Value"
-msgstr ""
-
-#: assets/dist/compatibility.js:75
-msgid "Leave empty to include by meta_key"
-msgstr ""
-
-#: assets/dist/compatibility.js:75
-msgid "Disable Compatibility"
-msgstr ""
-
-#: assets/dist/compatibility.js:75
-msgid "Enable Compatibility"
-msgstr ""
-
-#: assets/dist/compatibility.js:75
-msgid "Global settings for product (enable this to override variation settings)"
-msgstr ""
-
-#: assets/dist/compatibility.js:75
-msgid "Strict taxonomy/products"
-msgstr ""
-
-#: assets/dist/compatibility.js:75
-msgid "Strict term taxonomy"
-msgstr ""
-
-#: assets/dist/compatibility.js:75
-msgid "Meta field"
 msgstr ""
 
 #: assets/dist/settings.js:102
@@ -905,6 +872,10 @@ msgstr ""
 
 #: assets/dist/settings.js:102
 msgid "Data"
+msgstr ""
+
+#: assets/dist/settings.js:102
+msgid "PRO"
 msgstr ""
 
 #: assets/dist/settings.js:102
