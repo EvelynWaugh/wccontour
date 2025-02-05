@@ -128,6 +128,20 @@ function wccon_store_components( array $group, int $config_id, int $group_id ) {
 				)
 			);
 			$component_id = $wpdb->insert_id;
+
+			// component widgets.
+			$wpdb->insert(
+				$data_widgets,
+				array(
+					'component_id' => (int) $component['id'] ? (int) $component['id'] : $component_id,
+					'widget_value' => maybe_serialize( $component['widgets'] ),
+
+				),
+				array(
+					'%d',
+					'%s',
+				)
+			);
 		}
 
 		// meta component.
@@ -169,20 +183,6 @@ function wccon_store_components( array $group, int $config_id, int $group_id ) {
 
 			}
 		}
-
-		// component widgets.
-		$wpdb->insert(
-			$data_widgets,
-			array(
-				'component_id' => (int) $component['id'] ? (int) $component['id'] : $component_id,
-				'widget_value' => maybe_serialize( $component['widgets'] ),
-
-			),
-			array(
-				'%d',
-				'%s',
-			)
-		);
 
 	}
 }
@@ -1441,12 +1441,28 @@ function wccon_get_settings() {
 				'linkedin'  => '',
 			),
 		),
+		'ai'               => array(
+			'type'    => '',
+			'model'   => '',
+			'api_key' => '',
+			'compat'  => false,
+		),
 	);
 	$settings     = wp_cache_get( 'wccon_settings' );
 	if ( false === $settings ) {
 		$settings = get_option( 'wccon_settings' );
 		if ( ! $settings ) {
 			return $default_args;
+		}
+
+		// add ai to saved settings.
+		if ( ! isset( $settings['ai'] ) ) {
+			$settings['ai'] = array(
+				'type'    => '',
+				'model'   => '',
+				'api_key' => '',
+				'compat'  => false,
+			);
 		}
 		wp_cache_set( 'wccon_settings', $settings );
 		return $settings;

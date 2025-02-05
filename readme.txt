@@ -3,9 +3,9 @@
 Contributors: wsjrcatarri
 Tags: product bundles, woocommerce builder, product builder, bundles builder, woocommerce product builder, ajax product
 Requires at least: 5.5
-Tested up to: 6.4.3
+Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
   
@@ -13,7 +13,9 @@ Product Bundles Builder. Create and save customer's bundles.
   
 == Description ==
 
-**Build Product Configurator with Ease**: WC Contour allows you to structure your configurator into a hierarchy of group-subgroup-components, making it effortless to showcase your offerings. From electronics to fashion, from mining to camping, and beyond, WC Contour ensures that your customers find exactly what they're looking for.
+**Build Product Bundles with Ease**: WC Contour allows you to structure your configurator into a hierarchy of group-subgroup-components, making it effortless to showcase your offerings. From electronics to fashion, from mining to camping, and beyond, WC Contour ensures that your customers find exactly what they're looking for.
+
+WC Contour - Product Bundles Builder for WooCommerce is designed to empower shop owners in crafting extraordinary deals by bundling multiple products together for sale. This plugin is incredibly potent for driving sales across various product categories while providing customers with enticing benefits. It serves as an intelligent solution for augmenting cross-selling tactics within your WooCommerce store.
 
 [Plugin home page](https://wccontour.evelynwaugh.com.ua/) | [Demo](https://wccontour.evelynwaugh.com.ua/pc-builder/) | [Docs](https://wccontour.evelynwaugh.com.ua/documentation/requirements/)
 
@@ -38,10 +40,12 @@ https://www.youtube.com/watch?v=brE5t-MN1j0
 
 * **Saves Bundles in real-time** - Saves customer selections to browser's localStorage
 * **Product Compatibility** - Instant Compatibility Checks, Alerts. Enhanced User Experience
+* **NEW: Product Compatibility AI** - Let AI check for users if selected products are compatible.
 * **Unlimited Builders available**
 * **Multiple product selections**
 * **Extra collapsible sections for additional components**
 * **Adds component/product image to saved bundle**
+
 
 Saved bundles are securely stored in the database, easily accessible from customer's account page. Customers can revisit, edit, or expand their selections whenever they desire, ensuring a hassle-free shopping journey.
 
@@ -96,3 +100,8 @@ Simply deactivate and delete the plugin.
 == Changelog ==
 = 1.0.0 =
 * Plugin released.
+= 1.0.2 =
+* Adapted CSS for better compatibility with most themes.
+* Improved UI/UX.
+* Enhanced performance of the admin builder.
+* Added AI Product Compatibility in the PRO version.

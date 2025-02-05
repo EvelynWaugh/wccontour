@@ -249,8 +249,9 @@ class WCCON_Admin {
 						$group_components                                = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$components_table}  WHERE group_id=%d ", (int) $group['id'] ), ARRAY_A );
 						$sub_groups                                      = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$groups_table} WHERE parent_id=%d ", (int) $group['id'] ), ARRAY_A );
 						$shortcodes_data[ $key ]['groups'][ $key_group ]['components'] = array();
+						$component_index = 0;
 						if ( ! empty( $group_components ) ) {
-							$component_index = 0;
+							
 							foreach ( $group_components as $key_component => $component ) {
 								$component_index++;
 								$shortcodes_data[ $key ]['groups'][ $key_group ]['components'][ $key_component ] = array(

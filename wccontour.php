@@ -3,7 +3,7 @@
  * Plugin Name: WC Contour - Product Bundles Builder for WooCommerce
  * Plugin URI: https://wccontour.evelynwaugh.com.ua/
  * Description: Enables product configuration through an intuitive builder, empowering customers to create and save product bundles.
- * Version: 1.0.0
+ * Version: 1.0.2
  * Author: wsjrcatarri
  * Requires at least: 5.5
  * Requires PHP: 7.4
@@ -12,7 +12,7 @@
  * Domain Path: /languages
  * Text Domain: wccontour
  * WC requires at least: 5.0.0
- * WC tested up to:      8.5.2
+ * WC tested up to:      9.6.1
  *
  * @package WCCON
  */
@@ -61,6 +61,8 @@ if ( ! function_exists( 'wccon_fs' ) ) {
 	wccon_fs();
 	// Signal that SDK was initiated.
 	do_action( 'wccon_fs_loaded' );
+
+	wccon_fs()->add_action( 'after_uninstall', 'wccon_fs_uninstall_cleanup' );
 }
 
 
@@ -71,7 +73,7 @@ if ( ! defined( 'WCCON_PLUGIN_DIR' ) ) {
 	define( 'WCCON_PLUGIN_DIR', __FILE__ );
 }
 
-define( 'WCCON_PLUGIN_VERSION', '1.0.0' );
+define( 'WCCON_PLUGIN_VERSION', '1.0.2' );
 require_once WCCON_PLUGIN_PATH . 'includes/traits/Instancetiable.php';
 
 /**
@@ -106,7 +108,7 @@ class WCCON_Plugin {
 	 */
 	public static function activate_plugin() {
 		register_activation_hook( __FILE__, array( 'WCCON_Plugin', 'activate' ) );
-		register_uninstall_hook( __FILE__, array( 'WCCON_Plugin', 'uninstall' ) );
+		// register_uninstall_hook( __FILE__, array( 'WCCON_Plugin', 'uninstall' ) );
 	}
 
 	/**
@@ -282,6 +284,91 @@ add_action(
 		}
 	}
 );
+
+/**
+ * Uninstall.
+ */
+function wccon_fs_uninstall_cleanup() {
+	if ( ! class_exists( 'WCCON_DB' ) ) {
+		require WCCON_PLUGIN_PATH . 'includes/db.php';
+	}
+	if ( ! function_exists( 'wccon_get_settings' ) ) {
+		$default_args = array(
+			'account_endpoint' => 'wccon-builder',
+			'account_title'    => __( 'Saved lists', 'wccontour' ),
+			'list_limit'       => 10,
+			'product_limit'    => 10,
+			'delete_data'      => false,
+			'enabled_compat'   => wccon_fs()->can_use_premium_code() ? true : false,
+			'local_storage'    => wccon_fs()->can_use_premium_code() ? true : false,
+			'count_list'       => 30,
+			'style'            => array(
+				'sticky_desktop'    => true,
+				'sticky_tablet'     => false,
+				'sticky_mobile'     => false,
+				'button_variations' => false,
+				'image_size'        => 'medium',
+			),
+			'multilang'        => array(
+				'show_modal'   => false,
+				'show_account' => false,
+			),
+			'socials'          => array(
+
+				'items' => array(
+					'link'      => 'enabled',
+					'facebook'  => 'enabled',
+					'twitter'   => 'enabled',
+					'pinterest' => '',
+					'telegram'  => '',
+					'viber'     => '',
+					'whatsapp'  => '',
+					'linkedin'  => '',
+				),
+			),
+		);
+
+		$settings = get_option( 'wccon_settings' );
+		if ( ! $settings ) {
+			$settings = $default_args;
+		}
+	} else {
+		$settings = wccon_get_settings();
+	}
+
+	if ( $settings['delete_data'] ) {
+		global $wpdb;
+		$lists_table           = WCCON_DB::tables( 'saved_lists', 'name' );
+		$config_table          = WCCON_DB::tables( 'data', 'name' );
+		$components_table      = WCCON_DB::tables( 'components', 'name' );
+		$components_meta_table = WCCON_DB::tables( 'components_meta', 'name' );
+		$groups_table          = WCCON_DB::tables( 'groups', 'name' );
+		$groups_meta_table     = WCCON_DB::tables( 'groups_meta', 'name' );
+		$widgets_table         = WCCON_DB::tables( 'widgets', 'name' );
+
+		$wpdb->query( "DELETE FROM {$config_table}" );
+
+		$wpdb->query( "DROP TABLE IF EXISTS {$widgets_table}" );
+		$wpdb->query( "DROP TABLE IF EXISTS {$components_meta_table}" );
+		$wpdb->query( "DROP TABLE IF EXISTS {$components_table}" );
+		$wpdb->query( "DROP TABLE IF EXISTS {$groups_meta_table}" );
+		$wpdb->query( "DROP TABLE IF EXISTS {$groups_table}" );
+		$wpdb->query( "DROP TABLE IF EXISTS {$lists_table}" );
+		$wpdb->query( "DROP TABLE IF EXISTS {$config_table}" );
+		delete_option( 'wccon_db_version' );
+		delete_option( 'wccon_settings' );
+		delete_option( 'wccon_flushed' );
+		delete_post_meta_by_key( 'wccon_enable_variation_compatibility' );
+		delete_post_meta_by_key( 'wccon_compatibility_variation' );
+		delete_post_meta_by_key( 'wccon_compatibility_comparator' );
+		delete_post_meta_by_key( 'wccon_strict_taxonomy' );
+		delete_post_meta_by_key( 'wccon_strict_term' );
+		delete_post_meta_by_key( 'wccon_compatibility_data' );
+		delete_post_meta_by_key( 'wccon_enable_compatibility' );
+		delete_post_meta_by_key( 'wccon_global_compatibility' );
+	}
+}
+
 
 /**
  * Init plugin.

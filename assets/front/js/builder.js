@@ -83,11 +83,9 @@
 			.map( ( group ) => {
 				if ( group.slug === slug ) {
 					if ( type === 'add' ) {
-						console.log( 'type:add' );
+						//console.log( 'type:add' );
 						if ( group.multiple ) {
-							const filteredProducts = group.products.filter(
-								( p ) => parseInt( p.clone, 10 ) !== parseInt( value.clone, 10 )
-							);
+							const filteredProducts = group.products.filter( ( p ) => parseInt( p.clone, 10 ) !== parseInt( value.clone, 10 ) );
 							return {
 								...group,
 								products: [ ...filteredProducts, value ],
@@ -134,9 +132,7 @@
 			if ( group.slug === slug ) {
 				return {
 					...group,
-					products: group.products.map( ( p ) =>
-						p.product_id === id || p.variation_id === id ? { ...p, quantity: value } : p
-					),
+					products: group.products.map( ( p ) => ( p.product_id === id || p.variation_id === id ? { ...p, quantity: value } : p ) ),
 				};
 			}
 			if ( group.hasOwnProperty( 'components' ) ) {
@@ -220,7 +216,7 @@
 				newProducts = wccon_get_components_products( slug, group.components, newProducts );
 			}
 		}
-		console.log( 'Component products:', newProducts );
+		//console.log( 'Component products:', newProducts );
 		return newProducts;
 	}
 
@@ -499,19 +495,16 @@
 			//maybe clear removed builder list before load.
 			this.maybeClearLists.bind( this )();
 
-			console.log(
-				'Builder data vs storage Data before:',
-				this.builderWrapperData,
-				JSON.parse( this.savedList )
-			);
+			//console.log( 'Builder data vs storage Data before:', this.builderWrapperData, JSON.parse( this.savedList ) );
 			this.productScheme = this.rebuildList.bind( this )();
-			console.log( 'Builder data vs storage Data after:', this.builderWrapperData, JSON.parse( this.savedList ) );
+			//console.log( 'Builder data vs storage Data after:', this.builderWrapperData, JSON.parse( this.savedList ) );
 
-			console.log( 'Product scheme', this.productScheme );
+			//console.log( 'Product scheme', this.productScheme );
 			this.componentContainer = $( el ).find( '.wccon-component' ).first();
 			this.componentHead = this.builderWrapper.find( '.wccon-component-inner' );
 			this.addCartButton = this.builderWrapper.find( '.wccon-add-to-cart' );
 			this.multipleButtons = this.builderWrapper.find( '.wccon-component-product__multiple' );
+			this.componentProduct = this.builderWrapper.find( '.wccon-component-product' );
 			this.openedContent = true;
 
 			this.totalsContainer = this.builderWrapper.find( '.wccon-bottom-block' );
@@ -566,6 +559,8 @@
 				} );
 			const _this = this;
 
+			//toastr options
+			this.setToastrOptions();
 			//
 			this.builderWrapper
 				.on( 'click', '.wccon-refresh-button', this.editProduct.bind( this ) )
@@ -577,17 +572,14 @@
 				.on( 'click', '.wccon-dropdown-select li a', this.handleSorting.bind( this ) )
 				.on( 'click', '.product-attribute-group__nice-select', this.handleVariationSelectOpen.bind( this ) )
 				.on( 'click', '.product-attribute-group__nice-select li', this.handleVariationSelect.bind( this ) )
-				.on(
-					'click',
-					'.product-attribute-group__color li, .product-attribute-group__button li',
-					this.handleVariationColor.bind( this )
-				)
+				.on( 'click', '.product-attribute-group__color li, .product-attribute-group__button li', this.handleVariationColor.bind( this ) )
 				.on( 'click', '.wccon-pagination-item', this.handlePagination.bind( this ) )
 
 				.on( 'click', '.wccon-product-title .desc-toggler', this.handleExpandDescription.bind( this ) )
 				//templating
 				.on( 'click', '.product-item__add', this.chooseProduct.bind( this ) )
-
+				//.on( 'mouseover', '.wccon-component__selected.incompatible', this.showTippy.bind( this ) )
+				//.on( 'mouseleave', '.wccon-component__selected.incompatible', this.hideTippy.bind( this ) )
 				//custom events.
 				.on( 'wccon-load-list-start', this.loadListStart.bind( this ) )
 				.on( 'wccon-load-list-end', this.loadListEnd.bind( this ) )
@@ -647,13 +639,7 @@
 						.attr( 'data-variation-id' );
 
 					const componentSlug = $( this ).closest( '.wccon-component' ).attr( 'data-component-slug' );
-					_this.dataStore = wccon_change_product(
-						componentSlug,
-						productId,
-						variationId,
-						_this.productScheme.groups,
-						quantityVal
-					);
+					_this.dataStore = wccon_change_product( componentSlug, productId, variationId, _this.productScheme.groups, quantityVal );
 					_this.productScheme = {
 						..._this.productScheme,
 						groups: _this.dataStore,
@@ -678,9 +664,21 @@
 			//other events
 			this.toggleExtraContainer.on( 'click', this.toggleExtraHandler.bind( this ) );
 
-			//maybe load list from localStorage.
+			//maybe load list from localStorage. WHy so late?
 			if ( ! this.isListExists() ) {
 				this.maybeLoadList.bind( this )();
+			}
+
+			//hovered component
+			this.hoveredClonedElement = null;
+			this.hoveredComponent = null;
+			if ( ! this.isMobile ) {
+				this.hoveredComponentHandler( 'add' );
+				$( document.body ).on(
+					'click',
+					'.wccon-component-product__hovered .wccon-component-product__multiple',
+					this.hoveredComponentClick.bind( this )
+				);
 			}
 
 			//builder loaded event
@@ -704,7 +702,7 @@
 			//product chosen event
 			this.builderWrapper.on( 'wccon-product-chosen', ( e, slug, id, dataStore ) => {
 				const selectedProducts = wccon_retrieve_products( dataStore );
-				console.log( 'choosen', dataStore, selectedProducts );
+				//console.log( 'choosen', dataStore, selectedProducts );
 				if ( ! selectedProducts.length ) {
 					this.addCartButton.attr( 'disabled', true );
 				} else {
@@ -715,7 +713,7 @@
 			//product removed event
 			this.builderWrapper.on( 'wccon-product-removed', ( e, slug, id, dataStore ) => {
 				const selectedProducts = wccon_retrieve_products( dataStore );
-				console.log( 'removed', selectedProducts );
+				//console.log( 'removed', selectedProducts );
 				if ( ! selectedProducts.length ) {
 					this.addCartButton.attr( 'disabled', true );
 				} else {
@@ -766,9 +764,7 @@
 				_this.chooseVariation( productElement );
 			} );
 
-			const currentComponent = this.builderWrapper.find(
-				`.wccon-component.opened[data-component-slug=${ this.componentSlug }]`
-			);
+			const currentComponent = this.builderWrapper.find( `.wccon-component.opened[data-component-slug=${ this.componentSlug }]` );
 			currentComponent.find( '.wccon-product-item' ).each( ( i, el ) => {
 				if ( $( el ).attr( 'data-product_variations' ) ) {
 					this.chooseVariation( $( el ) );
@@ -871,11 +867,11 @@
 		}
 		rebuildList() {
 			if ( this.isListExists() ) {
-				console.log( 'rebuildList-1' );
+				
 				return this.builderWrapperData;
 			}
 			if ( ! this.savedList || ( this.savedList && ! this.saveToStorage ) ) {
-				console.log( 'rebuildList-2', this.saveToStorage );
+				
 				return this.builderWrapperData;
 			}
 
@@ -887,10 +883,10 @@
 			let newSavedList = null;
 
 			if ( ! newSavedList ) {
-				console.log( 'rebuild not found' );
+				
 				return this.builderWrapperData;
 			}
-			console.log( 'New', newSavedList );
+			
 			return newSavedList;
 		}
 		loadListStart( e, listId, savedList ) {
@@ -924,22 +920,24 @@
 				const parsedList = JSON.parse( this.savedList );
 
 				if ( ! Array.isArray( parsedList ) ) {
-					console.log( 'removed wccon-list' );
+					//console.log( 'removed wccon-list' );
 					localStorage.removeItem( 'wccon-list' );
 					this.savedList = null;
 					return;
 				}
-				let savedShortcodes = Array.isArray( WCCON_BUILDER_FRONT.saved_config_ids )
-					? WCCON_BUILDER_FRONT.saved_config_ids
-					: [];
-				const filteredSaved = parsedList.filter(
-					( builder ) => savedShortcodes.indexOf( parseInt( builder.id, 10 ) ) !== -1
-				);
+				let savedShortcodes = Array.isArray( WCCON_BUILDER_FRONT.saved_config_ids ) ? WCCON_BUILDER_FRONT.saved_config_ids : [];
+				const filteredSaved = parsedList.filter( ( builder ) => savedShortcodes.indexOf( parseInt( builder.id, 10 ) ) !== -1 );
 				localStorage.setItem( 'wccon-list', JSON.stringify( filteredSaved ) );
 			}
 		}
 
 		maybeLoadList() {}
+		setToastrOptions() {
+			const options = wp.hooks.applyFilters( 'wccon-toastr-options', {
+				timeOut: 4000,
+			} );
+			toastr.options = { ...toastr.options, ...options };
+		}
 		search( e ) {
 			//return on shift and Tab key
 			if ( e.keyCode === 16 || e.keyCode === 9 ) {
@@ -975,10 +973,7 @@
 			const selectType = _thisELement.closest( '.wccon-dropdown-select' ).attr( 'data-type' );
 			this.activeFilters[ selectType ] = e.target.hash.slice( 1 );
 
-			_thisELement
-				.closest( '.wccon-dropdown-select' )
-				.find( '.wccon-dropdown-inner span' )
-				.text( _thisELement.text() );
+			_thisELement.closest( '.wccon-dropdown-select' ).find( '.wccon-dropdown-inner span' ).text( _thisELement.text() );
 			this.buildQueryString();
 			this.sendRequest();
 		}
@@ -998,10 +993,7 @@
 			}
 			const selectEl = _thisELement.closest( '.product-attribute-group' ).find( 'select' );
 			if ( selectEl.length ) {
-				_thisELement
-					.closest( '.product-attribute-group' )
-					.find( '.product-attribute-selected span' )
-					.text( _thisELement.text() );
+				_thisELement.closest( '.product-attribute-group' ).find( '.product-attribute-selected span' ).text( _thisELement.text() );
 				_thisELement.closest( '.product-attribute-group' ).find( 'li' ).attr( 'aria-selected', 'false' );
 				_thisELement.closest( 'li' ).attr( 'aria-selected', 'true' );
 				selectEl.val( selectValue );
@@ -1053,7 +1045,7 @@
 
 		buildQueryString( pagination = false, data = {} ) {
 			let $query = this.form.serializeArray();
-			console.log( 'Query string:', $query );
+			//console.log( 'Query string:', $query );
 			let tax_query = [];
 			let meta_query = [];
 
@@ -1063,7 +1055,7 @@
 				// }
 				if ( /^wccon_tax_filter/.test( el.name ) ) {
 					let tax_name = el.name.replace( 'wccon_tax_filter[', '' ).slice( 0, -1 );
-					console.log( 'tax_name', tax_name );
+					//console.log( 'tax_name', tax_name );
 
 					const taxExists = tax_query.find( ( tq ) => tq.tax_name === tax_name );
 					if ( taxExists ) {
@@ -1082,7 +1074,7 @@
 				}
 				if ( /^wccon_meta_filter/.test( el.name ) ) {
 					let meta_key = el.name.replace( 'wccon_meta_filter[', '' ).slice( 0, -1 );
-					console.log( 'meta_key', meta_key );
+					//console.log( 'meta_key', meta_key );
 
 					const metaKeyExists = meta_query.find( ( mq ) => mq.meta_key === meta_key );
 					if ( metaKeyExists ) {
@@ -1109,7 +1101,7 @@
 				stock: this.activeFilters.stock,
 				search: this.searchField.val(),
 			};
-			console.log( this.activeFilters );
+			// console.log( this.activeFilters );
 			for ( let key in this.activeFilters ) {
 				this.query.delete( key );
 				if ( key === 'tax_query' ) {
@@ -1133,12 +1125,10 @@
 				}
 			}
 
-			console.log( 'Query string-2', this.query.toString() );
+			//console.log( 'Query string-2', this.query.toString() );
 		}
 		sendRequest() {
-			this.componentContainer = this.builderWrapper.find(
-				`.wccon-component[data-component-slug=${ this.componentSlug }]`
-			);
+			this.componentContainer = this.builderWrapper.find( `.wccon-component[data-component-slug=${ this.componentSlug }]` );
 			if ( ! this.componentContainer.length ) {
 				return;
 			}
@@ -1150,24 +1140,19 @@
 			$.ajax( {
 				url: this.ajaxUrl,
 				type: 'POST',
-				data:
-					`action=wccon_filter_builder&nonce=${ this.nonce }&component_id=${ this.componentId }&` +
-					this.query.toString(),
+				data: `action=wccon_filter_builder&nonce=${ this.nonce }&component_id=${ this.componentId }&` + this.query.toString(),
 			} )
 				.then( ( res ) => {
-				
 					//remove skeleton
-				
+
 					$( currentItem ).find( '.wccon-skeleton-product-items' ).remove();
 
-					console.log( res );
+					//console.log( res );
 					if ( ! res.success ) {
 						return;
 					}
 
-					this.componentContainer
-						.find( '.wccon-products-body' )
-						.replaceWith( $( res.data.html ).find( '.wccon-products-body' ) );
+					this.componentContainer.find( '.wccon-products-body' ).replaceWith( $( res.data.html ).find( '.wccon-products-body' ) );
 					this.componentContainer.find( 'aside' ).replaceWith( $( res.data.html ).find( 'aside' ) );
 					// this.componentContainer
 					// 	.find( '.wccon-pagination' )
@@ -1255,10 +1240,7 @@
 			const productPrice = _thisButton.siblings( '.product-item__price' ).find( '.price' ).html();
 
 			const productTitle = productItem.find( '.wccon-product-title' ).text();
-			const productLink = _thisButton
-				.closest( '.wccon-product-item' )
-				.find( '.wccon-product-title' )
-				.attr( 'href' );
+			const productLink = _thisButton.closest( '.wccon-product-item' ).find( '.wccon-product-title' ).attr( 'href' );
 			const productSku = productItem.find( '.wccon-product-sku span' ).text();
 			const productImage = productItem.find( '.product-item__image' ).html();
 			const productStockStatus = productItem.find( '.stock' );
@@ -1296,12 +1278,7 @@
 			if ( productData && this.soldIndividually ) {
 				productInfo.sold_individually = productData.sold_individually ?? false;
 			}
-			const productFilled = wp.hooks.applyFilters(
-				'wccon-choose-products-args',
-				productInfo,
-				productItem,
-				componentContainer
-			);
+			const productFilled = wp.hooks.applyFilters( 'wccon-choose-products-args', productInfo, productItem, componentContainer );
 			// console.log('FILLED',productFilled);
 			productBodyContainer.replaceWith( templateSelected( productFilled ) );
 
@@ -1316,15 +1293,10 @@
 				clone: cloneIndex ? cloneIndex : 0,
 				component: productSlug,
 			};
-			console.log( 'VALUE', productValue, productSlug, this.productScheme.groups );
+			//console.log( 'VALUE', productValue, productSlug, this.productScheme.groups );
 
-			const newProductScheme = wccon_change_component(
-				productSlug,
-				this.productScheme.groups,
-				productValue,
-				'add'
-			);
-			console.log( 'DATASTORE', newProductScheme );
+			const newProductScheme = wccon_change_component( productSlug, this.productScheme.groups, productValue, 'add' );
+			//console.log( 'DATASTORE', newProductScheme );
 			this.productScheme = {
 				...this.productScheme,
 				groups: newProductScheme,
@@ -1342,6 +1314,7 @@
 			$( componentHead ).removeClass( 'opened' );
 			$( componentContainer ).removeClass( 'opened' );
 			$( document.body ).removeClass( 'wccon-component-opened' );
+			$( 'html,body' ).css( 'overflow', '' );
 			$( componentHead ).siblings( '.wccon-product-list' ).remove();
 
 			//unsubscribe trap focus.
@@ -1353,13 +1326,11 @@
 				const subGroupSlug = subgroupContainer.attr( 'data-component-slug' );
 				subgroupContainer.addClass( 'selected' );
 				const subGroupProducts = wccon_get_components_products( subGroupSlug, this.productScheme.groups );
-				console.log( 'SUB', subGroupProducts, subGroupSlug );
+				//console.log( 'SUB', subGroupProducts, subGroupSlug );
 				const fullSubGroupProducts = subGroupProducts
 					.map( ( product ) => {
 						const subGroupComponents = $( `[data-component-slug=${ product.component }]` );
-						const productContainer = $(
-							`.wccon-component-product[data-product-id=${ product.product_id }]`
-						);
+						const productContainer = $( `.wccon-component-product[data-product-id=${ product.product_id }]` );
 						if ( subGroupComponents.length && productContainer.length ) {
 							const subGroupTitle = productContainer.find( '.wccon-component-product__title' ).text();
 							const subGroupImage = productContainer.find( '.wccon-component-product__image' ).html();
@@ -1374,9 +1345,7 @@
 					.filter( ( el ) => el !== null );
 
 				const subTemplateSelected = wp.template( 'wccon-filled-subgroup' );
-				const subBodyContainer = subgroupContainer
-					.find( '.wccon-component-inner .wccon-component__body' )
-					.first();
+				const subBodyContainer = subgroupContainer.find( '.wccon-component-inner .wccon-component__body' ).first();
 				subBodyContainer.siblings( '.wccon-component__icon' ).hide();
 
 				subBodyContainer.replaceWith(
@@ -1386,12 +1355,7 @@
 				);
 			}
 			this.totalsContainer.show();
-			this.builderWrapper.trigger( 'wccon-product-chosen', [
-				productSlug,
-				productId,
-				this.dataStore,
-				this.builderWrapper,
-			] );
+			this.builderWrapper.trigger( 'wccon-product-chosen', [ productSlug, productId, this.dataStore, this.builderWrapper ] );
 			//only if compatibility enabled.
 			if ( this.compatiblityEnabled && WCCON_BUILDER_FRONT.nonce2 ) {
 				if ( this.compatibilityRequest !== null ) {
@@ -1411,7 +1375,7 @@
 				} );
 				this.compatibilityRequest
 					.then( ( res ) => {
-						console.log( res );
+						//console.log( res );
 						this.runCompatibility( res.data.cd );
 					} )
 					.catch( ( err ) => {
@@ -1430,10 +1394,7 @@
 			componentContainer.removeClass( 'selected out-ofstock' );
 			const componentIcon = _thisButton.closest( '.wccon-component-inner' ).find( '.wccon-component__icon' );
 			componentIcon.show();
-			const productId = _thisButton
-				.closest( '.wccon-component-product-item' )
-				.find( '.wccon-component-product' )
-				.attr( 'data-product-id' );
+			const productId = _thisButton.closest( '.wccon-component-product-item' ).find( '.wccon-component-product' ).attr( 'data-product-id' );
 
 			//check if this is copy component
 			const cloneIndex = _thisButton.closest( '.wccon-component' ).attr( 'data-copy' );
@@ -1462,14 +1423,14 @@
 					return index;
 				} );
 			} );
-			console.log( this.productScheme.groups, cloneIndex );
+			//console.log( this.productScheme.groups, cloneIndex );
 			const newProductScheme = wccon_change_component(
 				productSlug,
 				this.productScheme.groups,
 				{ product_id: productId, clone: cloneIndex ? cloneIndex : 0 },
 				'remove'
 			);
-			console.log( 'DATASTORE', newProductScheme );
+			//console.log( 'DATASTORE', newProductScheme );
 			this.productScheme = {
 				...this.productScheme,
 				groups: newProductScheme,
@@ -1486,13 +1447,11 @@
 			if ( subgroupContainer.length ) {
 				const subGroupSlug = subgroupContainer.attr( 'data-component-slug' );
 				const subGroupProducts = wccon_get_components_products( subGroupSlug, this.productScheme.groups );
-				console.log( 'SUB', subGroupProducts, subGroupSlug );
+				//console.log( 'SUB', subGroupProducts, subGroupSlug );
 				const fullSubGroupProducts = subGroupProducts
 					.map( ( product ) => {
 						const subGroupComponents = $( `[data-component-slug=${ product.component }]` );
-						const productContainer = $(
-							`.wccon-component-product[data-product-id=${ product.product_id }]`
-						);
+						const productContainer = $( `.wccon-component-product[data-product-id=${ product.product_id }]` );
 						if ( subGroupComponents.length && productContainer.length ) {
 							const subGroupTitle = productContainer.find( '.wccon-component-product__title' ).text();
 							const subGroupImage = productContainer.find( '.wccon-component-product__image' ).html();
@@ -1508,9 +1467,7 @@
 
 				const subTemplateSelected = wp.template( 'wccon-filled-subgroup' );
 
-				const subBodyContainer = subgroupContainer
-					.find( '.wccon-component-inner .wccon-component__body' )
-					.first();
+				const subBodyContainer = subgroupContainer.find( '.wccon-component-inner .wccon-component__body' ).first();
 				if ( ! fullSubGroupProducts.length ) {
 					subgroupContainer.removeClass( 'selected' );
 					subBodyContainer.siblings( '.wccon-component__icon' ).show();
@@ -1534,12 +1491,7 @@
 					componentContainer.addClass( 'exhide' );
 				}
 			}
-			this.builderWrapper.trigger( 'wccon-product-removed', [
-				productSlug,
-				productId,
-				this.dataStore,
-				this.builderWrapper,
-			] );
+			this.builderWrapper.trigger( 'wccon-product-removed', [ productSlug, productId, this.dataStore, this.builderWrapper ] );
 
 			//only if compatibility enabled
 			if ( this.compatiblityEnabled && WCCON_BUILDER_FRONT.nonce2 ) {
@@ -1559,7 +1511,7 @@
 				} );
 				this.compatibilityRequest
 					.then( ( res ) => {
-						console.log( res );
+						//console.log( res );
 
 						this.runCompatibility( res.data.cd );
 					} )
@@ -1571,7 +1523,6 @@
 			}
 		}
 		runCompatibility( data ) {
-			
 			if ( ! this.compatiblityEnabled || ! WCCON_BUILDER_FRONT.nonce2 ) {
 				$( '.wccon-component', this.builderWrapper )
 					.not( '.wccon-component-has-children' )
@@ -1586,18 +1537,15 @@
 					.filter( '.wccon-component-has-children' )
 					.each( function () {
 						if ( $( this ).find( '.wccon-component.selected' ).length ) {
-							$( '> .wccon-component-inner', $( this ) )
-								.find( '.wccon-component__selected' )
-								.addClass( 'compatible' );
+							$( '> .wccon-component-inner', $( this ) ).find( '.wccon-component__selected' ).addClass( 'compatible' );
 						} else {
-							$( '> .wccon-component-inner', $( this ) )
-								.find( '.wccon-component__selected' )
-								.removeClass( 'compatible' );
+							$( '> .wccon-component-inner', $( this ) ).find( '.wccon-component__selected' ).removeClass( 'compatible' );
 						}
 					} );
-					
+
 				return;
 			}
+
 			$( '.wccon-component__selected', this.builderWrapper ).removeClass( 'incompatible compatible' );
 			if ( $( '.product-top__required-item', this.builderWrapper ).length ) {
 				$( '.product-top__required-item', this.builderWrapper ).removeClass( 'incompatible compatible' );
@@ -1610,7 +1558,7 @@
 
 			this.incompatibleData = []; //clear data before storing new values.
 			const incompatibleProducts = Object.values( data );
-			console.log( 'Incompatibility products:', incompatibleProducts );
+			//console.log( 'Incompatibility products:', incompatibleProducts );
 			for ( let icpProduct of incompatibleProducts ) {
 				let foundComponent;
 				if ( parseInt( icpProduct.clone, 10 ) > 0 ) {
@@ -1619,9 +1567,7 @@
 						this.builderWrapper
 					).first();
 				} else {
-					foundComponent = $( `[data-component-slug=${ icpProduct.slug }]`, this.builderWrapper )
-						.not( '[data-copy]' )
-						.first();
+					foundComponent = $( `[data-component-slug=${ icpProduct.slug }]`, this.builderWrapper ).not( '[data-copy]' ).first();
 				}
 				const selectedIcon = foundComponent.find( '.wccon-component__selected' );
 
@@ -1641,24 +1587,31 @@
 					];
 					selectedIcon.addClass( 'incompatible' );
 					selectedIcon.find( 'svg' ).html( '<use xlink:href="#icon-uncheck"></use>' );
-					$( `.product-top__required-item[data-image-slug="${ icpProduct.slug }"]` ).addClass(
-						'incompatible'
-					);
+					$( `.product-top__required-item[data-image-slug="${ icpProduct.slug }"]` ).addClass( 'incompatible' );
 					$( `.product-top__extra-item[data-image-slug="${ icpProduct.slug }"]` ).addClass( 'incompatible' );
 
 					let displayCompatibilityAlerts = true;
 					if ( this.isMobile ) {
 						displayCompatibilityAlerts = false;
 					}
-					const compAlertsFiltered = wp.hooks.applyFilters(
-						'wccon-display-compatibility-alerts',
-						displayCompatibilityAlerts
-					);
+					const compAlertsFiltered = wp.hooks.applyFilters( 'wccon-display-compatibility-alerts', displayCompatibilityAlerts );
 					if ( compAlertsFiltered ) {
 						toastr.error( icpProduct.text );
 					}
 				}
 			}
+			//make sure all selected components that dont have incompatibility are compatible.
+			$( '.wccon-component.selected', this.builderWrapper )
+				.not( '.wccon-component-has-children' )
+				.each( function () {
+					if ( ! $( this ).find( '.wccon-component__selected' ).hasClass( 'incompatible' ) ) {
+						$( this ).find( '.wccon-component__selected' ).addClass( 'compatible' );
+						$( this ).find( '.wccon-component__selected' ).find( 'svg' ).html( '<use xlink:href="#icon-check"></use>' );
+						$( `.product-top__required-item[data-image-slug="${ $( this ).data( 'component-slug' ) }"]` ).addClass( 'compatible' );
+						$( `.product-top__extra-item[data-image-slug="${ $( this ).data( 'component-slug' ) }"]` ).addClass( 'compatible' );
+					}
+				} );
+
 			//subgroup update icon.
 			$( '.wccon-component-has-children', this.builderWrapper ).each( ( i, el ) => {
 				let compatible = true;
@@ -1676,9 +1629,7 @@
 					}
 				} );
 				const subGroupSlug = $( el ).attr( 'data-component-slug' );
-				const subGroupIcon = $( '.wccon-component-inner', $( el ) )
-					.first()
-					.find( '.wccon-component__selected' );
+				const subGroupIcon = $( '.wccon-component-inner', $( el ) ).first().find( '.wccon-component__selected' );
 				if ( initCompatible && compatible ) {
 					subGroupIcon.addClass( 'compatible' );
 					subGroupIcon.find( 'svg' ).html( '<use xlink:href="#icon-check"></use>' );
@@ -1693,6 +1644,8 @@
 				}
 			} );
 
+			//init tippy
+			this.showTippy();
 		}
 
 		runCompatibilitySaved() {
@@ -1739,6 +1692,7 @@
 			$( componentHead ).removeClass( 'opened' );
 			componentContainer.removeClass( 'opened' );
 			$( document.body ).removeClass( 'wccon-component-opened' );
+			$( 'html,body' ).css( 'overflow', '' );
 			$( componentHead ).siblings( '.wccon-product-list' ).remove();
 
 			//unsubscribe trap focus.
@@ -1779,7 +1733,7 @@
 				},
 			} )
 				.then( ( res ) => {
-					console.log( res );
+					//console.log( res );
 					if ( res.success && res.data.fragments ) {
 						const $supports_html5_storage = 'sessionStorage' in window && window.sessionStorage !== null;
 
@@ -1790,10 +1744,7 @@
 							} );
 
 							if ( $supports_html5_storage ) {
-								sessionStorage.setItem(
-									wc_cart_fragments_params.fragment_name,
-									JSON.stringify( res.data.fragments )
-								);
+								sessionStorage.setItem( wc_cart_fragments_params.fragment_name, JSON.stringify( res.data.fragments ) );
 
 								localStorage.setItem( cart_hash_key, res.data.cart_hash );
 								sessionStorage.setItem( cart_hash_key, res.data.cart_hash );
@@ -1865,14 +1816,8 @@
 			if ( attributes.count && attributes.count === attributes.chosenCount ) {
 				if ( variation ) {
 					if ( attributes.chosenCount ) {
-						this.wccon_set_content(
-							productPrice,
-							variation.price_html ? variation.price_html : variation.range_html
-						);
-						this.wccon_set_content(
-							productSku,
-							variation.sku ? variation.sku : WCCON_BUILDER_FRONT.i18n_sku_na
-						);
+						this.wccon_set_content( productPrice, variation.price_html ? variation.price_html : variation.range_html );
+						this.wccon_set_content( productSku, variation.sku ? variation.sku : WCCON_BUILDER_FRONT.i18n_sku_na );
 						this.wccon_set_content( productStock, variation.stock_html );
 
 						if ( variation.image && variation.image.url && variation.image.url.length > 0 ) {
@@ -1902,10 +1847,7 @@
 						}
 					} else {
 						this.wccon_set_content( productPrice, variation.range_price );
-						this.wccon_set_content(
-							productSku,
-							variation.sku ? variation.sku : WCCON_BUILDER_FRONT.i18n_sku_na
-						);
+						this.wccon_set_content( productSku, variation.sku ? variation.sku : WCCON_BUILDER_FRONT.i18n_sku_na );
 						this.wccon_set_content( productStock, variation.stock_html );
 						if ( variation.image && variation.image.url && variation.image.url.length > 0 ) {
 							this.wccon_set_variation_attr( productImage, 'src', variation.image.url );
@@ -1947,7 +1889,7 @@
 
 						checkAttributes[ currentAttributeName ] = '';
 						const variations = this.findMatchingVariations( variationData, checkAttributes );
-						console.log( 'VARIATIONS', variations );
+						//console.log( 'VARIATIONS', variations );
 						if ( standartSelect.length ) {
 							let current_attr_select = $( el ),
 								show_option_none = $( el ).data( 'show_option_none' ),
@@ -1961,17 +1903,10 @@
 							if ( ! current_attr_select.data( 'attribute_html' ) ) {
 								var refSelect = current_attr_select.clone();
 
-								refSelect
-									.find( 'option' )
-									.removeAttr( 'attached' )
-									.prop( 'disabled', false )
-									.prop( 'selected', false );
+								refSelect.find( 'option' ).removeAttr( 'attached' ).prop( 'disabled', false ).prop( 'selected', false );
 
 								// Legacy data attribute.
-								current_attr_select.data(
-									'attribute_options',
-									refSelect.find( 'option' + option_gt_filter ).get()
-								);
+								current_attr_select.data( 'attribute_options', refSelect.find( 'option' + option_gt_filter ).get() );
 								current_attr_select.data( 'attribute_html', refSelect.html() );
 							}
 
@@ -2009,18 +1944,14 @@
 																option_value = $option_element.val();
 
 															if ( attr_val === option_value ) {
-																$option_element.addClass(
-																	'attached ' + variation_active
-																);
+																$option_element.addClass( 'attached ' + variation_active );
 																break;
 															}
 														}
 													}
 												} else {
 													// Attach all apart from placeholder.
-													new_attr_select
-														.find( 'option:gt(0)' )
-														.addClass( 'attached ' + variation_active );
+													new_attr_select.find( 'option:gt(0)' ).addClass( 'attached ' + variation_active );
 												}
 											}
 										}
@@ -2047,12 +1978,7 @@
 								}
 							}
 
-							if (
-								attached_options_count > 0 &&
-								selected_attr_val &&
-								selected_attr_val_valid &&
-								'no' === show_option_none
-							) {
+							if ( attached_options_count > 0 && selected_attr_val && selected_attr_val_valid && 'no' === show_option_none ) {
 								new_attr_select.find( 'option:first' ).remove();
 								option_gt_filter = '';
 							}
@@ -2062,9 +1988,7 @@
 
 							// Finally, copy to DOM and set value.
 							current_attr_select.html( new_attr_select.html() );
-							current_attr_select
-								.find( 'option' + option_gt_filter + ':not(.enabled)' )
-								.prop( 'disabled', true );
+							current_attr_select.find( 'option' + option_gt_filter + ':not(.enabled)' ).prop( 'disabled', true );
 
 							// Choose selected value.
 							if ( selected_attr_val ) {
@@ -2225,13 +2149,7 @@
 				if ( variationAttributes.hasOwnProperty( attrName ) ) {
 					const val1 = variationAttributes[ attrName ];
 					const val2 = attributes[ attrName ];
-					if (
-						val1 !== undefined &&
-						val2 !== undefined &&
-						val1.length !== 0 &&
-						val2.length !== 0 &&
-						val1 !== val2
-					) {
+					if ( val1 !== undefined && val2 !== undefined && val1.length !== 0 && val2.length !== 0 && val1 !== val2 ) {
 						match = false;
 					}
 				}
@@ -2263,22 +2181,140 @@
 				data,
 			};
 		}
-		addMultiple( e ) {}
+
+		hoveredComponentHandler( type = 'add' ) {
+			const hoverProductCallback = wp.hooks.applyFilters(
+				'wccon-hover-overflowed-product',
+				() => {
+					if ( type === 'add' ) {
+						this.builderWrapper.on( 'mouseenter', '.wccon-component-product', this.hoveredComponentEnter.bind( this ) );
+					} else {
+						this.builderWrapper.off( 'mouseenter', '.wccon-component-product', this.hoveredComponentEnter.bind( this ) );
+					}
+				},
+				type
+			);
+
+			hoverProductCallback();
+		}
+
+		hoveredComponentEnter( e ) {
+			const currentItem = $( e.currentTarget );
+			const parentItem = currentItem.parents( '.wccon-component' );
+
+			//hoveredItem skip.
+			if ( ! parentItem.length ) {
+				return;
+			}
+
+			if ( ! parentItem.is( '.selected' ) ) {
+				return;
+			}
+
+			const offset = currentItem.offset();
+
+			if ( currentItem.height() > 72 ) {
+				const componentSlug = parentItem.data( 'component-slug' );
+				const componentId = parentItem.data( 'component-id' );
+				const componentMultiple = parentItem.data( 'multiple' );
+				let componentClone = false;
+
+				if ( componentMultiple ) {
+					componentClone = parentItem.data( 'copy' );
+				}
+
+				let componentAttributes = 'data-component-slug="' + componentSlug + '" data-component-id="' + componentId + '"';
+
+				if ( componentClone ) {
+					componentAttributes += ' data-copy="' + componentClone + '"';
+				}
+
+				this.hoveredComponent = currentItem;
+				// Clone the hovered element
+				this.hoveredClonedElement = currentItem
+					.clone()
+					.addClass( 'hovered' )
+					.wrap( '<div class="wccon-component-product__hovered" ' + componentAttributes + '></div>' )
+					.parent();
+
+				// Apply initial styles
+				this.hoveredClonedElement
+					.css( {
+						position: 'absolute',
+						top: offset.top, // Place it exactly at original position
+						left: offset.left,
+						width: currentItem.outerWidth(),
+						height: currentItem.height() + 10, // Show full content
+						zIndex: 9999,
+						background: '#fff',
+						'box-shadow': '0 0 10px rgba(0, 0, 0, 0.1)',
+						transition: '0.5s ease-in-out',
+					} )
+					.appendTo( 'body' ); // Move it outside any restrictive containers
+
+				$( '.wccon-component-product__hovered' ).on( 'mouseleave', this.hoveredComponentLeave.bind( this ) );
+				$( '.wccon-component-product__hovered' ).on( 'mousemove', this.hoveredComponentMove.bind( this ) );
+			}
+		}
+
+		hoveredComponentMove( e ) {
+			if ( this.hoveredClonedElement ) {
+				const rect = this.hoveredComponent.get( 0 ).getBoundingClientRect();
+				const offsetX = Math.max( -5, Math.min( 5, event.clientX - rect.left - rect.width / 2 ) );
+				const offsetY = Math.max( -5, Math.min( 5, event.clientY - rect.top - rect.height / 2 ) );
+				this.hoveredClonedElement.css( {
+					transform: `translate(${ offsetX }px, ${ offsetY }px)`,
+				} );
+			}
+		}
+
+		hoveredComponentLeave( e ) {
+			
+			if ( this.hoveredClonedElement ) {
+				
+				this.hoveredClonedElement.remove();
+				this.hoveredClonedElement = null;
+				this.hoveredComponent = null;
+			}
+		}
+
+		hoveredComponentClick( e ) {
+			const currentItem = e.currentTarget;
+			let componentElement = $( currentItem ).closest( '.wccon-component-product__hovered' );
+
+			//handle hovered item
+			if ( componentElement.length ) {
+				const componentSlugHovered = componentElement.data( 'component-slug' );
+				const componentCloneHovered = componentElement.data( 'copy' );
+				let componentCloneHoveredIndex = false;
+				if ( typeof componentCloneHovered !== 'undefined' ) {
+					componentCloneHoveredIndex = parseInt( componentCloneHovered, 10 );
+
+					componentElement = $( this.builderWrapper ).find(
+						`[data-component-slug=${ componentSlugHovered }][data-copy="${ componentCloneHoveredIndex }"]`
+					);
+				} else {
+					componentElement = $( this.builderWrapper ).find( `[data-component-slug=${ componentSlugHovered }]` );
+				}
+
+				this.addMultiple( e, componentElement );
+			}
+		}
+
+		addMultiple( e, componentElement = false ) {}
 		handleExpandDescription( e ) {
 			e.preventDefault();
 			e.stopPropagation();
 
 			const currentItem = e.currentTarget;
-			const descriptionContainer = $( currentItem )
-				.closest( '.wccon-product-title' )
-				.siblings( '.product-item__desc' );
+			const descriptionContainer = $( currentItem ).closest( '.wccon-product-title' ).siblings( '.product-item__desc' );
 			descriptionContainer.toggleClass( 'active' );
 			$( currentItem ).toggleClass( 'active' );
 		}
 		maybeGetProducts( e ) {
 			const currentItem = e.currentTarget;
 			const componentItem = $( currentItem ).closest( '.wccon-component' );
-			console.log( 'ATTEMP get products' );
+			//console.log( 'ATTEMP get products' );
 			if ( componentItem.hasClass( 'wccon-component-has-children' ) ) {
 				componentItem.toggleClass( 'subgroup-opened' );
 				return;
@@ -2313,7 +2349,7 @@
 				componentItem.removeClass( 'opened' );
 				$( currentItem ).siblings( '.wccon-product-list' ).remove();
 				$( document.body ).removeClass( 'wccon-component-opened' );
-
+				$( 'html,body' ).css( 'overflow', '' );
 				//unsubscribe trap focus.
 				wcconTrapFocus( componentItem, 'off' );
 
@@ -2358,6 +2394,7 @@
 			componentItem.addClass( 'opened' );
 			$( 'html, body' ).animate( { scrollTop: $( currentItem ).offset().top }, 200 );
 			$( document.body ).addClass( 'wccon-component-opened' );
+			$( 'html,body' ).css( 'overflow', 'hidden' );
 
 			//subscribe trap focus. While waiting products.
 			wcconTrapFocus( componentItem, 'on' );
@@ -2366,7 +2403,7 @@
 			this.builderWrapper.trigger( 'wccon-component-opened', [ componentSlug ] );
 
 			const componentProducts = wccon_get_components_products( componentSlug, this.productScheme.groups );
-			console.log( 'component products:', componentProducts );
+			//console.log( 'component products:', componentProducts );
 			//hide totals.
 			this.totalsContainer.hide();
 			// return;
@@ -2387,7 +2424,7 @@
 			} );
 			this.productRequest
 				.then( ( res ) => {
-					console.log( res );
+					//console.log( res );
 					if ( res.success ) {
 						//remove skeleton.
 						$( currentItem ).siblings( '.wccon-product-list' ).remove();
@@ -2413,7 +2450,7 @@
 			const currentItem = $( e.currentTarget ).closest( 'button' );
 			currentItem.attr( 'disabled', true );
 			currentItem.addClass( 'loading' );
-			console.log( 'Product scheme:', this.productScheme );
+			//console.log( 'Product scheme:', this.productScheme );
 			$.ajax( {
 				url: this.ajaxUrl,
 				type: 'POST',
@@ -2426,7 +2463,7 @@
 				},
 			} )
 				.then( ( res ) => {
-					console.log( res );
+					//console.log( res );
 					if ( res.success ) {
 						toastr.success( this.successMessage );
 					} else {
@@ -2576,7 +2613,7 @@
 						shortcode_id: $( _this ).closest( '.wccon-builder-wrapper' ).data( 'wccon-builder' ),
 					},
 				} ).then( ( res ) => {
-					console.log( res );
+					//console.log( res );
 					$( '#wccon-user-list' ).find( '.wccon-skeleton-item' ).remove();
 					$( '.wccon-modal__body', $( '#wccon-user-list' ) ).html( res.data.html );
 
@@ -2608,7 +2645,7 @@
 						shortcode_id: $( _this ).closest( '.wccon-builder-wrapper' ).data( 'wccon-builder' ),
 					},
 				} ).then( ( res ) => {
-					console.log( res );
+					//console.log( res );
 					$( '#wccon-users-list' ).find( '.wccon-skeleton-item' ).remove();
 					$( '.wccon-modal__body', $( '#wccon-users-list' ) ).html( res.data.html );
 
@@ -2667,6 +2704,68 @@
 			$( this ).siblings( '.widget-expander-show' ).show();
 		}
 
+		showTippy() {
+			//clear tippyInstances
+			for ( const tippyInst of this.tippyInstances ) {
+				tippyInst[ 0 ].destroy();
+			}
+			if ( $.isEmptyObject( this.incompatibleData ) ) {
+				return;
+			}
+
+			for ( const componentData of this.incompatibleData ) {
+				const componentClone = parseInt( componentData.clone, 10 );
+				if ( componentClone > 0 ) {
+					$( `[data-component-slug=${ componentData.slug }][data-copy="${ componentData.clone }"]` ).attr(
+						'data-tippy',
+						componentData.text
+					);
+					const tippyInst = tippy(
+						`[data-component-slug="${ componentData.slug }"][data-copy="${ componentData.clone }"] .wccon-component__selected`,
+						{
+							content: componentData.text,
+							popperOptions: {
+								modifiers: [ { name: 'eventListeners', enabled: false } ],
+							},
+						}
+					);
+					this.tippyInstances.push( tippyInst );
+				} else {
+					$( `[data-component-slug=${ componentData.slug }]` ).not( '[data-copy]' ).attr( 'data-tippy', componentData.text );
+					const tippyInst = tippy( `[data-component-slug="${ componentData.slug }"]:not([data-copy]) .wccon-component__selected`, {
+						content: componentData.text,
+						popperOptions: {
+							modifiers: [ { name: 'eventListeners', enabled: false } ],
+						},
+					} );
+					this.tippyInstances.push( tippyInst );
+				}
+			}
+		}
+
+		hideTippy( e ) {
+			//clear tippyInstances
+
+			for ( const tippyInst of this.tippyInstances ) {
+				tippyInst[ 0 ].destroy();
+			}
+			for ( const componentData of this.incompatibleData ) {
+				const componentClone = parseInt( componentData.clone, 10 );
+				if ( componentClone > 0 ) {
+					if (
+						typeof $( `[data-component-slug=${ componentData.slug }][data-copy="${ componentData.clone }"]` ).attr( 'data-tippy' ) !==
+						'undefined'
+					) {
+						const tippyInstance = tippy(
+							`[data-component-slug="${ componentData.slug }"][data-copy="${ componentData.clone }"] .wccon-component__selected`
+						);
+						//tippyInstance.destroy();
+					}
+				} else if ( typeof $( `[data-component-slug=${ componentData.slug }]` ).not( '[data-copy]' ).attr( 'data-tippy' ) !== 'undefined' ) {
+					const tippyInstance2 = tippy( `[data-component-slug="${ componentData.slug }"]:not([data-copy]) .wccon-component__selected` );
+				}
+			}
+		}
 		maybeStringToNumber( str, float = true ) {
 			let numberValue = 0;
 			if ( float ) {
@@ -2690,9 +2789,7 @@
 			const savedItems = localStorage.getItem( 'wccon-list' );
 			const parsedSavedItems = savedItems ? JSON.parse( savedItems ) : [];
 
-			const foundExistingList = parsedSavedItems.find(
-				( savedItem ) => parseInt( savedItem.id, 10 ) === parseInt( this.builderId, 10 )
-			);
+			const foundExistingList = parsedSavedItems.find( ( savedItem ) => parseInt( savedItem.id, 10 ) === parseInt( this.builderId, 10 ) );
 			if ( foundExistingList ) {
 				const updatedSavedItems = parsedSavedItems.map( ( savedItem ) => {
 					if ( parseInt( savedItem.id, 10 ) === parseInt( this.builderId, 10 ) ) {
@@ -2705,7 +2802,7 @@
 					return savedItem;
 				} );
 				localStorage.setItem( 'wccon-list', JSON.stringify( updatedSavedItems ) );
-				console.log( 'maybeSaveToStorage1', updatedSavedItems, localStorage.getItem( 'wccon-list' ) );
+				//console.log( 'maybeSaveToStorage1', updatedSavedItems, localStorage.getItem( 'wccon-list' ) );
 				return;
 			}
 			const newSavedItem = { groups: this.productScheme.groups, id: this.builderId };
@@ -2713,7 +2810,7 @@
 				newSavedItem.lang = this.currentLang;
 			}
 			parsedSavedItems.push( newSavedItem );
-			console.log( 'maybeSaveToStorage2', parsedSavedItems, localStorage.getItem( 'wccon-list' ) );
+			//console.log( 'maybeSaveToStorage2', parsedSavedItems, localStorage.getItem( 'wccon-list' ) );
 			localStorage.setItem( 'wccon-list', JSON.stringify( parsedSavedItems ) );
 		}
 		isListExists() {
@@ -2847,7 +2944,7 @@
 				},
 			} )
 				.then( ( res ) => {
-					console.log( res );
+					//console.log( res );
 					if ( res.success && res.data.fragments ) {
 						const $supports_html5_storage = 'sessionStorage' in window && window.sessionStorage !== null;
 						if ( typeof window.wc_cart_fragments_params !== 'undefined' ) {
@@ -2857,10 +2954,7 @@
 							} );
 
 							if ( $supports_html5_storage ) {
-								sessionStorage.setItem(
-									wc_cart_fragments_params.fragment_name,
-									JSON.stringify( res.data.fragments )
-								);
+								sessionStorage.setItem( wc_cart_fragments_params.fragment_name, JSON.stringify( res.data.fragments ) );
 
 								localStorage.setItem( cart_hash_key, res.data.cart_hash );
 								sessionStorage.setItem( cart_hash_key, res.data.cart_hash );
@@ -2959,7 +3053,7 @@
 				},
 			} )
 				.then( ( res ) => {
-					console.log( res );
+					//console.log( res );
 					if ( res.success ) {
 						modalContainer.find( '.wccon-skeleton-item' ).remove();
 						const html = $.parseHTML( res.data.html );
@@ -2997,7 +3091,7 @@
 							data: { action: 'wccon_remove_list', listId, nonce: WCCON_BUILDER_FRONT.nonce },
 						} )
 							.then( ( res ) => {
-								console.log( res );
+								//console.log( res );
 								if ( res.success && res.data.deleted ) {
 									toastr.success( this.successMessageRemove );
 									$( `.wccon-saved-list[data-id="${ res.data.list_id }"]` ).remove();

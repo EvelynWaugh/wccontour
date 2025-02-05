@@ -118,14 +118,17 @@ class WCCON_Install {
 				REFERENCES {$config_table}(id) ON DELETE CASCADE
 			) $charset_collate;";
 
-			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-			dbDelta( $sql_data );
-			dbDelta( $sql_group );
-			dbDelta( $sql_group_meta );
-			dbDelta( $sql_component );
-			dbDelta( $sql_component_meta );
-			dbDelta( $sql_widgets );
-			dbDelta( $sql_saved_list );
+			if ( version_compare( $this->current_db_version, '1.0.1', '<' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+				dbDelta( $sql_data );
+				dbDelta( $sql_group );
+				dbDelta( $sql_group_meta );
+				dbDelta( $sql_component );
+				dbDelta( $sql_component_meta );
+				dbDelta( $sql_widgets );
+				dbDelta( $sql_saved_list );
+			}
+
 			update_option( 'wccon_db_version', $this->wc_config_db_version );
 
 	}

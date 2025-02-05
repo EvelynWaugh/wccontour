@@ -107,9 +107,9 @@ class WCCON_Shortcodes {
 				'components' => array(),
 				'position'   => $group['position'],
 			);
-
+			$component_index = 0;
 			if ( ! empty( $group_components ) ) {
-				$component_index = 0;
+				
 				foreach ( $group_components as $key_component => $component ) {
 					$component_index++;
 					$config_data['groups'][ $key_group ]['components'][ $key_component ] = array(

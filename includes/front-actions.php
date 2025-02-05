@@ -340,70 +340,60 @@ function wccon_render_product_item_attributes( $product, $attributes, $term_ids 
 			switch ( $attribute['attribute_type'] ) {
 
 				case 'button':
-					echo wp_kses_post(
-						$button_render(
-							array(
-								'options'   => $options,
-								'attribute' => $attribute_name,
-								'product'   => $product,
+					echo $button_render(
+						array(
+							'options'   => $options,
+							'attribute' => $attribute_name,
+							'product'   => $product,
 
-								'term_ids'  => $term_ids,
-							)
+							'term_ids'  => $term_ids,
 						)
 					);
 
 					break;
 				case 'color':
-					echo wp_kses_post(
-						$color_render(
-							array(
-								'options'   => $options,
-								'attribute' => $attribute_name,
-								'product'   => $product,
+					echo $color_render(
+						array(
+							'options'   => $options,
+							'attribute' => $attribute_name,
+							'product'   => $product,
 
-								'term_ids'  => $term_ids,
-							)
+							'term_ids'  => $term_ids,
 						)
 					);
 					break;
 				case 'select':
-					echo wp_kses_post(
-						$select_render(
-							array(
-								'options'   => $options,
-								'attribute' => $attribute_name,
-								'product'   => $product,
+					echo $select_render(
+						array(
+							'options'   => $options,
+							'attribute' => $attribute_name,
+							'product'   => $product,
 
-								'term_ids'  => $term_ids,
-							)
+							'term_ids'  => $term_ids,
 						)
 					);
 					break;
 				default:
-					echo wp_kses_post(
-						$default_render(
-							array(
-								'options'   => $options,
-								'attribute' => $attribute_name,
-								'product'   => $product,
+					echo $default_render(
+						array(
+							'options'   => $options,
+							'attribute' => $attribute_name,
+							'product'   => $product,
 
-								'term_ids'  => $term_ids,
-							)
+							'term_ids'  => $term_ids,
 						)
 					);
 
 					break;
 			}
 		} else {
-			echo wp_kses_post(
-				$default_render(
-					array(
-						'options'   => $options,
-						'attribute' => $attribute_name,
-						'product'   => $product,
+			echo $default_render(
+				array(
+					'options'   => $options,
+					'attribute' => $attribute_name,
+					'product'   => $product,
 
-						'term_ids'  => $term_ids,
-					)
+					'term_ids'  => $term_ids,
 				)
 			);
 		}

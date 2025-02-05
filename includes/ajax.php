@@ -309,8 +309,9 @@ class WCCON_Ajax {
 					$group_components                        = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$components_table}  WHERE group_id=%d ", (int) $group['id'] ), ARRAY_A );
 					$sub_groups                              = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$groups_table} WHERE parent_id=%d ", (int) $group['id'] ), ARRAY_A );
 					$shortcodes_data['groups'][ $key_group ]['components'] = array();
+					$component_index = 0;
 					if ( ! empty( $group_components ) ) {
-						$component_index = 0;
+						
 						foreach ( $group_components as $key_component => $component ) {
 							$component_index++;
 							$shortcodes_data['groups'][ $key_group ]['components'][ $key_component ] = array(
@@ -865,7 +866,7 @@ class WCCON_Ajax {
 
 		wp_send_json_success(
 			array(
-				'data'  => $data,
+				//'data'  => $data,
 				'whole' => $product_data,
 				'cd'    => $compatible_info,
 			)
@@ -907,7 +908,7 @@ class WCCON_Ajax {
 
 		wp_send_json_success(
 			array(
-				'data'     => $data,
+				//'data'     => $data,
 				'cd'       => $compatible_info,
 				'products' => $products,
 			)
@@ -1258,7 +1259,7 @@ class WCCON_Ajax {
 				'data'           => $new_data,
 				'cd'             => $compatible_info,
 				'product_scheme' => $product_sheme,
-				'raw'            => $data,
+				//'raw'            => $data,
 			)
 		);
 	}
